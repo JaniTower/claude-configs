@@ -1,0 +1,29 @@
+# Sensitive files that should never be committed
+*.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+secrets.json
+.env
+.env.*
+
+# Local overrides (if you use local testing)
+*.local.json
+*.local.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

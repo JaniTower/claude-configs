@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "my-configs": {
+      "source": {
+        "source": "directory",
+        "path": "/home/stefan/claude-configs"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "profile-al-development@my-configs": true
+  }
+}

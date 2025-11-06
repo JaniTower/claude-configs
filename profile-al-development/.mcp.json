@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "al-mcp-server": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/home/stefan/.npm/_npx/8b806c9e6ec42c23/node_modules/@sxkod/al-mcp-server/dist/index.js"
+      ],
+      "env": {}
+    }
+  }
+}
