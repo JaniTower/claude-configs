@@ -15,7 +15,7 @@ allowed-tools: ["*"]
 4. **Verify Code Cop Configuration**: Ensure all required code cops are enabled
 5. **Check AppSourceCop Configuration**: Verify `AppSourceCop.json` exists and is properly configured
 6. **Analyze Dependencies**: Review `app.json` for external dependencies per best practices
-7. Engage Roger Reviewer (BC Code Intelligence specialist) using `get_specialist_advice`
+7. Engage Roger Reviewer (BC Code Intelligence specialist) using `bc-expert` CLI
 8. Provide Roger with: file contents, diagnostics, purpose, and any custom instructions
 9. Conduct comprehensive review per specifications below
 
@@ -66,7 +66,7 @@ AL help compile
 
 5. **Analyze Context**: Determine the purpose and type of code (page, codeunit, table, etc.)
 
-6. **Engage Roger Reviewer**: Use `get_specialist_advice` with specialist_id `roger-reviewer`
+6. **Engage Roger Reviewer**: Use `bc-expert talk-to roger-reviewer` CLI command
 
 7. **Provide Complete Context**: Give Roger:
    - File contents to review
@@ -182,10 +182,9 @@ Check project configuration files:
 - Read `app.json` to analyze dependencies
 
 **Step 3: Engage Roger Reviewer**
-Use the BC Code Intelligence MCP to engage Roger Reviewer specialist:
-```
-Call: get_specialist_advice
-Specialist: roger-reviewer
+Use the bc-expert CLI to consult Roger Reviewer specialist:
+```bash
+bc-expert talk-to roger-reviewer "<question with context>" --json
 ```
 
 **Step 4: Provide Complete Context**
@@ -377,4 +376,8 @@ The code should be refactored before:
 
 ---
 
-**Note:** This command leverages Roger Reviewer from the BC Code Intelligence MCP. If Roger identifies issues requiring other specialists (e.g., performance issues → Dean Debug, architecture concerns → Alex Architect), he will recommend appropriate handoffs.
+**Note:** This command leverages Roger Reviewer via the `bc-expert` CLI. If Roger identifies issues requiring other specialists (e.g., performance issues -> Dean Debug, architecture concerns -> Alex Architect), consult them using:
+```bash
+bc-expert talk-to dean-debug "<performance question>" --json
+bc-expert talk-to alex-architect "<architecture question>" --json
+```

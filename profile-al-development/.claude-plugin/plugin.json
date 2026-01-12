@@ -1,7 +1,7 @@
 {
   "name": "profile-al-development",
   "description": "AL (Application Language) development configuration for Business Central. Includes AL-specific coding standards, patterns, commands, tooling, and specialized agents for large PR analysis.",
-  "version": "1.2.1",
+  "version": "1.4.0",
   "author": {
     "name": "Stefan"
   },
@@ -12,8 +12,13 @@
     "./agents/al-compiler.md",
     "./agents/dependency-analyzer.md",
     "./agents/review-aggregator.md",
-    "./agents/mcp-bc-expert.md",
     "./agents/mcp-docs-lookup.md",
-    "./agents/mcp-serena.md"
+    "./agents/mcp-serena.md",
+    "./agents/bc-expert.md",
+    "./agents/bc-knowledge.md",
+    "./agents/bc-code-reviewer.md",
+    "./agents/al-code-generator.md",
+    "./agents/al-test-generator.md",
+    "./agents/al-refactorer.md"
   ]
 }

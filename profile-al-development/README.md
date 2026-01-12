@@ -229,6 +229,44 @@ The included MCP server provides powerful AL code analysis:
 2. Suggests SetLoadFields usage
 3. Recommends batch operations when appropriate
 
+## BC Specialist Access
+
+This profile uses CLI-based BC specialist access instead of MCP registration to minimize context overhead.
+
+### Available via Agents
+
+| Agent | Purpose |
+|-------|---------|
+| `bc-expert` | General BC specialist consultation |
+| `bc-knowledge` | Knowledge base queries |
+| `bc-code-reviewer` | Code review with Roger Reviewer |
+
+### Direct CLI Usage (if needed)
+
+```bash
+# Auto-route question to best specialist
+bc-expert ask "How do I optimize table queries?"
+
+# Consult specific specialist
+bc-expert talk-to dean-debug "Performance issues"
+bc-expert talk-to roger-reviewer "Review this code pattern"
+bc-expert talk-to pat-performance "Query optimization"
+
+# Find best specialist
+bc-expert who-should-help "Security audit"
+
+# Search knowledge base
+bc-expert search "event subscriber patterns"
+bc-expert get "<topic-id>"
+
+# List all specialists
+bc-expert specialists --json
+```
+
+Agents automatically use these commands via Bash tool.
+
+---
+
 ## Troubleshooting
 
 ### Plugin not loading

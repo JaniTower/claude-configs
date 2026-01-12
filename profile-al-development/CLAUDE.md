@@ -2,20 +2,36 @@
 
 This memory file contains AL (Application Language) development guidelines and patterns for Microsoft Dynamics 365 Business Central.
 
-## MCP Tool Isolation (IMPORTANT)
+## MCP Tool Isolation & CLI Tools (IMPORTANT)
 
-**RULE: Never call MCP tools directly in the main conversation. Always delegate to agents.**
+**RULE: Minimize MCP overhead. Use CLI tools where available; delegate MCP calls to agents.**
 
-This keeps MCP interactions isolated, reducing context bloat and persisting findings to files.
+This reduces context bloat and persists findings to files.
 
-### Agent Delegation
+### Tool Delegation
 
-| Instead of calling... | Use this agent |
-|-----------------------|----------------|
-| `mcp__bc-code-intelligence-mcp*` | `mcp-bc-expert` |
-| `mcp__microsoft_docs_mcp*` | `mcp-docs-lookup` |
-| `mcp__serena*` | `mcp-serena` |
-| `mcp__al-mcp-server*` | `mcp-serena` or direct file tools |
+| Need | Use |
+|------|-----|
+| BC specialist advice | `bc-expert` CLI via Bash (see below) |
+| BC knowledge base | `bc-knowledge` agent |
+| BC code review | `bc-code-reviewer` agent |
+| Microsoft docs lookup | `mcp-docs-lookup` agent |
+| Code navigation (Serena) | `mcp-serena` agent |
+| AL object inspection | `mcp-serena` or direct file tools |
+
+### BC Specialist CLI Commands
+
+Use `bc-expert` CLI directly in Bash for BC specialist access:
+
+```bash
+bc-expert ask "<question>"                    # Auto-routes to specialist
+bc-expert talk-to <specialist> "<question>"   # Specific specialist
+bc-expert who-should-help "<question>"        # Find best specialist
+bc-expert specialists --json                  # List all specialists
+bc-expert search "<query>"                    # Search knowledge base
+bc-expert get "<topic-id>"                    # Get topic details
+bc-expert analyze --code workspace            # Analyze AL code
+```
 
 Agents return **one-line status** and write details to `.review/` files.
 
@@ -58,7 +74,9 @@ Agents write all output to `.review/` directory - minimal chat output, full deta
 | `al-compiler` | `04-compiler.md` | Compile diagnostics |
 | `dependency-analyzer` | `05-dependencies.md` | app.json architecture |
 | `review-aggregator` | `99-summary.md` | Combine all results |
-| `mcp-bc-expert` | `expert-[topic].md` | BC specialist consult |
+| `bc-expert` | `expert-[topic].md` | BC specialist consult (CLI) |
+| `bc-knowledge` | `knowledge-[topic].md` | BC knowledge base lookup |
+| `bc-code-reviewer` | `[file]-review.md` | BC code review (Roger) |
 | `mcp-docs-lookup` | `docs-[topic].md` | MS Learn docs |
 | `mcp-serena` | `code-[topic].md` | Code navigation |
 
@@ -73,35 +91,49 @@ All agents return one-line status. Read `.review/` files for details.
 
 ---
 
-## BC Code Intelligence MCP
+## BC Code Intelligence (CLI)
 
-This profile includes the BC Code Intelligence MCP server, which provides access to 14 specialized Business Central domain experts and structured development workflows.
+This profile uses the `bc-expert` CLI tool for BC specialist access, reducing MCP overhead while providing full access to specialized Business Central domain experts.
 
 ### Available Specialists
-- **Development:** Dean Debug, Quinn Quality, Isaac Integration
+- **Development:** Dean Debug, Sam Coder, Quinn Quality, Isaac Integration
 - **Architecture:** Alex Architect, Uri UX
 - **Performance:** Pat Performance
+- **Review:** Roger Reviewer
 - **Security:** Sam Security
 - **Testing:** Terra Test
 - **Documentation:** Dana Docs
 - **Learning:** Leo Learning
-- And more covering various BC development domains
 
-### Key Tools
-- `ask_bc_expert` - Ask questions to domain specialists
-- `discover_specialists` - Get intelligent routing suggestions
-- `suggest_specialist` - Start specialist conversations
-- `handoff_to_specialist` - Transfer context between specialists
-- `start_bc_workflow` - Initiate structured workflows (optimization, review, security audit, etc.)
-- `find_bc_topics` - Search for topics by expertise area
+### CLI Usage
+
+```bash
+# Auto-route to best specialist
+bc-expert ask "How do I optimize table queries?"
+
+# Consult specific specialist
+bc-expert talk-to roger-reviewer "Review this code pattern"
+bc-expert talk-to dean-debug "Performance issues with FindSet"
+bc-expert talk-to pat-performance "Query optimization strategies"
+
+# Find specialist for topic
+bc-expert who-should-help "Security audit for permissions"
+
+# Search knowledge base
+bc-expert search "event subscriber patterns"
+bc-expert get "<topic-id>"
+
+# List specialists
+bc-expert specialists --json
+```
 
 ### When to Use BC Code Intelligence
 - **Complex problems:** Route questions to appropriate domain experts
-- **Code reviews:** Use architecture or quality specialists
-- **Security concerns:** Consult security specialist
-- **Performance issues:** Engage performance expert
-- **Best practices:** Get guidance from relevant domain specialists
-- **Workflows:** Use structured workflows for optimization, upgrades, testing, onboarding, etc.
+- **Code reviews:** Use `bc-code-reviewer` agent (Roger Reviewer)
+- **Security concerns:** `bc-expert talk-to sam-security`
+- **Performance issues:** `bc-expert talk-to pat-performance`
+- **Best practices:** `bc-expert ask` with auto-routing
+- **Knowledge lookup:** `bc-knowledge` agent for knowledge base queries
 
 ## AL Language Conventions
 
