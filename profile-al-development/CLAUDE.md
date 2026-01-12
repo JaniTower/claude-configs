@@ -2,6 +2,77 @@
 
 This memory file contains AL (Application Language) development guidelines and patterns for Microsoft Dynamics 365 Business Central.
 
+## MCP Tool Isolation (IMPORTANT)
+
+**RULE: Never call MCP tools directly in the main conversation. Always delegate to agents.**
+
+This keeps MCP interactions isolated, reducing context bloat and persisting findings to files.
+
+### Agent Delegation
+
+| Instead of calling... | Use this agent |
+|-----------------------|----------------|
+| `mcp__bc-code-intelligence-mcp*` | `mcp-bc-expert` |
+| `mcp__microsoft_docs_mcp*` | `mcp-docs-lookup` |
+| `mcp__serena*` | `mcp-serena` |
+| `mcp__al-mcp-server*` | `mcp-serena` or direct file tools |
+
+Agents return **one-line status** and write details to `.review/` files.
+
+---
+
+## Custom Agents for Large PR Analysis
+
+Agents write all output to `.review/` directory - minimal chat output, full details in files.
+
+### Output Files
+
+```
+.review/
+├── 01-scan.md              # PR overview and chunks
+├── 02-chunk-1.md           # Chunk analysis
+├── 02-chunk-2.md           # Chunk analysis
+├── 02-chunk-N.md           # ...
+├── 03-standards.md         # Naming violations
+├── 04-compiler.md          # AL diagnostics
+├── 05-dependencies.md      # app.json analysis
+├── 99-summary.md           # Final aggregated report
+├── expert-[topic].md       # BC expert consultations
+├── docs-[topic].md         # MS docs lookups
+└── code-[topic].md         # Serena code analysis
+```
+
+### Quick Start
+
+```
+/review-large-pr main..HEAD
+```
+
+### Available Agents
+
+| Agent | Output File | Purpose |
+|-------|-------------|---------|
+| `pr-scanner` | `01-scan.md` | PR overview, suggest chunks |
+| `pr-chunk-analyzer` | `02-chunk-N.md` | Analyze file subset |
+| `al-standards-checker` | `03-standards.md` | Naming violations |
+| `al-compiler` | `04-compiler.md` | Compile diagnostics |
+| `dependency-analyzer` | `05-dependencies.md` | app.json architecture |
+| `review-aggregator` | `99-summary.md` | Combine all results |
+| `mcp-bc-expert` | `expert-[topic].md` | BC specialist consult |
+| `mcp-docs-lookup` | `docs-[topic].md` | MS Learn docs |
+| `mcp-serena` | `code-[topic].md` | Code navigation |
+
+### Workflow
+
+1. `pr-scanner` → `.review/01-scan.md` (get chunks)
+2. Multiple `pr-chunk-analyzer` in parallel → `.review/02-chunk-*.md`
+3. `al-standards-checker` + `al-compiler` + `dependency-analyzer` in parallel
+4. `review-aggregator` → `.review/99-summary.md`
+
+All agents return one-line status. Read `.review/` files for details.
+
+---
+
 ## BC Code Intelligence MCP
 
 This profile includes the BC Code Intelligence MCP server, which provides access to 14 specialized Business Central domain experts and structured development workflows.
