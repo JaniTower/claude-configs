@@ -1,43 +1,27 @@
-# AL Development Profile
+# AL Development Profile - Full Lifecycle
 
-Claude Code plugin for Microsoft Dynamics 365 Business Central AL (Application Language) development.
+**Version:** 2.8.0
 
-## What's Included
+Claude Code profile for Microsoft Dynamics 365 Business Central AL development with complete lifecycle support.
 
-### CLAUDE.md - AL Coding Standards
-Comprehensive AL development guidelines including:
-- Object and field naming conventions
-- Code style best practices
-- Event patterns and error handling
-- Performance optimization techniques
-- Testing guidelines
-- Common AL patterns and examples
+## Overview
 
-### MCP Server Configuration
-Pre-configured AL MCP server for:
-- Searching AL objects in workspace (.app packages)
-- Getting object definitions (tables, pages, codeunits, reports)
-- Finding references across codebase
-- Analyzing AL code structure
+This profile provides a document-driven development workflow with specialized agents for each phase of AL development: planning, implementation, testing, and support.
 
-### Directory Structure
-```
-profile-al-development/
-├── .claude-plugin/
-│   └── plugin.json        # Plugin metadata
-├── CLAUDE.md              # AL coding standards
-├── commands/              # Custom slash commands (add your own)
-├── skills/                # Model-invoked skills (add your own)
-├── agents/                # Custom subagents (add your own)
-├── .mcp.json              # AL MCP server config
-└── README.md              # This file
-```
+## Key Features
 
-## Usage
+- **Document-Driven Workflow** - All agents collaborate via `.dev/` markdown files
+- **Full Lifecycle Coverage** - Requirements → Design → Implementation → Testing
+- **MCP Integration** - BC Intelligence, Microsoft Docs, AL Dependency navigation
+- **Automated Workflows** - Complete development cycles with single commands
+- **Clean Context** - Agents write detailed files, return concise summaries
 
-### Enable in Your AL Projects
+## Quick Start
+
+### Enable in Your AL Project
 
 In your AL project's `.claude/settings.json`:
+
 ```json
 {
   "extraKnownMarketplaces": {
@@ -54,132 +38,346 @@ In your AL project's `.claude/settings.json`:
 }
 ```
 
-**Note:** Adjust the path if your username is different from `stefan`.
+### Run Full Development Cycle
+
+```
+/dev-cycle "Add customer credit limit validation"
+```
+
+This runs the complete pipeline:
+1. Requirements engineering
+2. BC solution design
+3. Implementation planning
+4. Code implementation
+5. Code review
+6. Diagnostics fixing
+7. Test creation
+8. Test review
+
+All results in `.dev/` directory.
+
+## Available Commands
+
+### Estimation & Planning
+
+- `/estimate "[description]"` - Complete estimation workflow (interview → experts → planning → hours)
+- `/estimate --quick "[description]"` - Quick estimate (skip interview)
+- `/interview` - Deep requirements gathering (40+ questions)
+- `/plan "[description]"` - Planning phase only (requirements → design → plan)
+
+### Quick Fix (⚡ Fastest)
+
+- `/fix "[error or bug]"` - Quick bug fix workflow (5 min: locate → fix → verify, no planning)
+
+### Full Workflows
+
+- `/dev-cycle "[description]"` - Complete development cycle
+- `/develop` - Development phase only (implement → review → fix)
+- `/test` - Testing phase only (create tests → review)
+
+### On-Demand Support
+
+- `/bc-expert "[question]"` - Consult BC specialists
+- `/docs-lookup "[topic]"` - Search Microsoft Docs
+- `/nav-baseapp "[query]"` - Explore base app objects
+
+## Development Phases
+
+### Phase 1: Planning & Design
+
+**Agents:**
+1. **requirements-engineer** - Extract and document requirements
+2. **solution-planner** - Design BC-integrated solution + create implementation plan
+
+**Output:**
+- `.dev/01-requirements.md`
+- `.dev/02-solution-plan.md`
+
+### Phase 2: Development & Quality
+
+**Agents:**
+3. **al-developer** - Write AL code
+4. **code-reviewer** - Review code quality
+5. **diagnostics-fixer** - Fix compiler diagnostics
+
+**Output:**
+- `.dev/03-code-review.md`
+- `.dev/04-diagnostics.md`
+- AL source files
+
+### Phase 3: Testing & Validation
+
+**Agents:**
+6. **test-engineer** - Create comprehensive tests
+7. **test-reviewer** - Review test coverage
+
+**Output:**
+- `.dev/05-test-plan.md`
+- `.dev/06-test-review.md`
+- Test codeunits
+
+### Support Agents (On-Demand)
+
+**Agents:**
+8. **bc-expert** - BC specialist consultation
+9. **docs-lookup** - Microsoft Docs search
+10. **dependency-navigator** - Base app exploration
+
+**Output:**
+- `.dev/expert-[topic].md`
+- `.dev/docs-[topic].md`
+- `.dev/nav-[topic].md`
+
+**Note:** solution-planner uses BC Intelligence, MS Docs, and AL Dependency MCP tools internally.
+
+## MCP Server Configuration
+
+This profile uses three MCP servers:
+
+### BC Code Intelligence MCP
+- BC specialist consultations
+- Best practices and patterns
+- Architecture guidance
+
+### Microsoft Docs MCP
+- Official AL documentation
+- API references
+- Breaking changes information
+
+### AL Dependency MCP
+- Base app object navigation
+- Event discovery
+- Dependency analysis
+
+## Directory Structure
+
+```
+profile-al-development/
+├── .claude-plugin/
+│   └── plugin.json           # Plugin metadata
+├── agents/                   # Specialized agents (10 total)
+│   ├── requirements-engineer.md
+│   ├── solution-planner.md
+│   ├── al-developer.md
+│   ├── code-reviewer.md
+│   ├── diagnostics-fixer.md
+│   ├── test-engineer.md
+│   ├── test-reviewer.md
+│   ├── bc-expert.md
+│   ├── docs-lookup.md
+│   └── dependency-navigator.md
+├── commands/                 # Slash commands
+│   ├── dev-cycle.md
+│   ├── plan.md
+│   ├── develop.md
+│   ├── test.md
+│   ├── bc-expert.md
+│   ├── docs-lookup.md
+│   └── nav-baseapp.md
+├── CLAUDE.md                 # Main profile instructions
+├── .mcp.json                 # MCP server configuration
+└── README.md                 # This file
+```
+
+## Typical Workflow
+
+### Quick Bug Fix (5 minutes)
+
+```bash
+# Fast track for small bugs
+/fix "Email validation fails for john.doe@example.com"
+
+# Reviews:
+# - Locates the issue in code
+# - Shows proposed fix
+# - You approve
+# - Runs diagnostics
+# - Done! Ready to commit
+```
+
+### Starting a New Feature
+
+```bash
+# 1. Run full development cycle
+/dev-cycle "Add field validation for customer emails"
+
+# 2. Review output files
+cat .dev/01-requirements.md
+cat .dev/02-solution-plan.md
+
+# 3. Implementation, review, diagnostics run automatically
+
+# 4. Review code and test results
+cat .dev/03-code-review.md
+cat .dev/06-test-review.md
+
+# 5. Done! Code, tests, and documentation all in place
+```
+
+### Planning Only
+
+```bash
+# Create solution plan without coding
+/plan "Add dashboard for sales analytics"
+
+# Review plan
+cat .dev/02-solution-plan.md
+
+# Later, implement the plan
+/develop
+```
+
+### Getting BC Expert Help
+
+```bash
+# Consult BC specialist
+/bc-expert "Best practice for extending posting routines?"
+
+# Review consultation
+cat .dev/expert-posting-routines.md
+```
+
+### Exploring Base App
+
+```bash
+# Find extension points
+/nav-baseapp "Find all Customer table events"
+
+# Review findings
+cat .dev/nav-customer-events.md
+```
+
+## AL Coding Standards
+
+This profile enforces BC best practices:
+
+- **PascalCase** naming
+- **Table extensions** over base modifications
+- **Event subscribers** for base app integration
+- **SetLoadFields** for performance
+- **XML documentation** on public procedures
+- **DataClassification** on all fields
+
+See `CLAUDE.md` for complete standards.
+
+## Output Files
+
+All agent work documented in `.dev/`:
+
+```
+.dev/
+├── 01-requirements.md      # What to build
+├── 02-solution-plan.md     # Complete solution (design + implementation)
+├── 03-code-review.md       # Code quality review
+├── 04-diagnostics.md       # Compiler fixes
+├── 05-test-plan.md         # Test strategy
+├── 06-test-review.md       # Test coverage review
+├── session-log.md          # Agent activity log
+├── expert-*.md             # BC specialist consultations
+├── docs-*.md               # Microsoft Docs lookups
+└── nav-*.md                # Base app explorations
+```
+
+## Agent Collaboration
+
+Agents read previous outputs to maintain context:
+
+```
+requirements-engineer → 01-requirements.md
+                              ↓
+solution-planner → 02-solution-plan.md (reads 01, uses MCP tools)
+                              ↓
+al-developer → AL code (reads 02)
+                              ↓
+code-reviewer → 03-code-review.md (reads code)
+                              ↓
+[and so on...]
+```
+
+## Benefits
+
+### Document-Driven
+- Complete audit trail
+- Easy to review and iterate
+- Persistent context across sessions
+
+### Clean Main Conversation
+- Agents write to files, not chat
+- Concise status updates only
+- No context pollution
+
+### Full Lifecycle
+- Every phase covered
+- Nothing falls through cracks
+- Consistent quality
+
+### MCP Integration
+- Official Microsoft documentation
+- BC specialist expertise
+- Base app understanding
 
 ## Customization
 
-### Adding Custom Commands
+### Project-Specific Settings
 
-Create slash commands in the `commands/` directory:
+In your project's `.claude/CLAUDE.md`:
 
-```bash
-cd ~/claude-configs/profile-al-development/commands
-```
-
-Create a file like `deploy.md`:
-```markdown
----
-description: Deploy AL extension to sandbox
-allowed-tools: ["Bash"]
----
-
-Deploy the current AL extension to the configured sandbox environment.
-
-Run the deployment script and handle any errors appropriately.
-```
-
-Use it in any AL project: `/deploy`
-
-### Adding Skills
-
-Create model-invoked skills in the `skills/` directory:
-
-```bash
-mkdir -p ~/claude-configs/profile-al-development/skills/al-debugging
-cd ~/claude-configs/profile-al-development/skills/al-debugging
-```
-
-Create `SKILL.md`:
-```markdown
----
-name: al-debugging
-description: Debug AL runtime errors and provide solutions
-allowed-tools: ["Read", "Grep", "mcp__al-mcp-server__al_search_objects"]
----
-
-When debugging AL errors:
-1. Analyze the error message
-2. Search for related objects in the codebase
-3. Identify common AL pitfalls (e.g., RecordRef issues, missing permissions)
-4. Suggest fixes with code examples
-```
-
-Claude will automatically invoke this skill when debugging AL code.
-
-### Project-Specific Overrides
-
-Each project can override or extend the plugin configuration:
-
-**In your project's `.claude/CLAUDE.md`:**
 ```markdown
 # Project-Specific AL Guidelines
 
-## This Project Uses
-- Custom table prefix: ABC
-- Special validation rules for customer records
-- Integration with external API for pricing
+## Object Number Range
+- Tables: 50100-50199
+- Codeunits: 50100-50199
+- Pages: 50100-50199
+
+## Custom Prefix
+- All objects: `ACME`
 
 @/home/stefan/claude-configs/profile-al-development/CLAUDE.md
 ```
 
-The `@` import loads the plugin's CLAUDE.md, and your project-specific instructions augment it.
+The `@` import loads the profile, your settings augment it.
 
-## Updating the MCP Server Path
+## Troubleshooting
 
-If your AL MCP server is installed in a different location, update `.mcp.json`:
+### Plugin Not Loading
+```bash
+# Verify registration
+cat ~/.claude/settings.json
 
-```json
-{
-  "mcpServers": {
-    "al-mcp-server": {
-      "type": "stdio",
-      "command": "node",
-      "args": [
-        "/path/to/your/al-mcp-server/dist/index.js"
-      ],
-      "env": {}
-    }
-  }
-}
+# Check plugin valid
+cat ~/claude-configs/profile-al-development/.claude-plugin/plugin.json
 ```
 
-Or use npx for automatic resolution:
-```json
-{
-  "mcpServers": {
-    "al-mcp-server": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "@sxkod/al-mcp-server"
-      ],
-      "env": {}
-    }
-  }
-}
+### Agents Not Working
+- Ensure MCP servers are configured
+- Check `.mcp.json` paths
+- Verify BC Intelligence MCP is running
+
+### Clean Slate
+```bash
+# Remove work directory to start fresh
+rm -rf .dev/
 ```
 
-## Best Practices
+## Requirements
 
-### When to Update This Plugin
-- Discovered a useful AL pattern or best practice
-- Created a reusable command that works across projects
-- Found a better way to structure AL code
-- Want to share improvements across all AL projects
+- Claude Code CLI
+- AL Language extension
+- BC development environment
+- MCP servers (optional but recommended):
+  - BC Code Intelligence MCP
+  - Microsoft Docs MCP
+  - AL Dependency MCP
 
-### When to Use Project-Specific Config
-- Project-specific naming conventions or prefixes
-- Client-specific requirements or constraints
-- Temporary experimental patterns
-- One-off commands for specific projects
+## Contributing
 
-### Committing Changes
+Improvements to this profile benefit all your AL projects. After making changes:
 
-After making improvements:
 ```bash
 cd ~/claude-configs
 git add profile-al-development/
-git commit -m "Update AL error handling pattern"
+git commit -m "Improve [aspect]"
 git push
 ```
 
@@ -189,116 +387,12 @@ cd ~/claude-configs
 git pull
 ```
 
-All your AL projects across all computers immediately benefit.
-
-## AL Development Tips
-
-### Using the AL MCP Server
-
-The included MCP server provides powerful AL code analysis:
-
-**Search for objects:**
-```
-@al-mcp-server Search for all tables related to customers
-```
-
-**Get object definition:**
-```
-@al-mcp-server Get the definition of the Customer table
-```
-
-**Find references:**
-```
-@al-mcp-server Find all references to the PostingDate field
-```
-
-### Common AL Workflows
-
-**Implementing a table extension:**
-1. Claude knows AL naming conventions from CLAUDE.md
-2. Creates properly structured table extension
-3. Follows field naming standards automatically
-
-**Creating events:**
-1. Claude uses standard event subscriber pattern
-2. Applies proper event naming from guidelines
-3. Includes error handling best practices
-
-**Performance optimization:**
-1. Claude references performance patterns from CLAUDE.md
-2. Suggests SetLoadFields usage
-3. Recommends batch operations when appropriate
-
-## BC Specialist Access
-
-This profile uses CLI-based BC specialist access instead of MCP registration to minimize context overhead.
-
-### Available via Agents
-
-| Agent | Purpose |
-|-------|---------|
-| `bc-expert` | General BC specialist consultation |
-| `bc-knowledge` | Knowledge base queries |
-| `bc-code-reviewer` | Code review with Roger Reviewer |
-
-### Direct CLI Usage (if needed)
-
-```bash
-# Auto-route question to best specialist
-bc-expert ask "How do I optimize table queries?"
-
-# Consult specific specialist
-bc-expert talk-to dean-debug "Performance issues"
-bc-expert talk-to roger-reviewer "Review this code pattern"
-bc-expert talk-to pat-performance "Query optimization"
-
-# Find best specialist
-bc-expert who-should-help "Security audit"
-
-# Search knowledge base
-bc-expert search "event subscriber patterns"
-bc-expert get "<topic-id>"
-
-# List all specialists
-bc-expert specialists --json
-```
-
-Agents automatically use these commands via Bash tool.
-
----
-
-## Troubleshooting
-
-### Plugin not loading
-```bash
-# Verify registration
-cat ~/.claude/settings.json
-
-# Check plugin is valid
-cat ~/claude-configs/profile-al-development/.claude-plugin/plugin.json
-```
-
-### CLAUDE.md not applying
-- Start a new Claude Code session
-- Check for syntax errors in CLAUDE.md
-- Verify file is readable: `cat ~/claude-configs/profile-al-development/CLAUDE.md`
-
-### MCP server not connecting
-- Verify MCP server is installed
-- Check path in `.mcp.json` is correct
-- Test MCP server manually: `node /path/to/al-mcp-server/dist/index.js`
-
-## Contributing
-
-When you make improvements to this profile:
-1. Test in a real AL project
-2. Document the change in this README if significant
-3. Update CLAUDE.md with new patterns
-4. Commit with descriptive message
-5. Push to sync across computers
-
 ## Resources
 
 - [AL Language Documentation](https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-programming-in-al)
-- [AL Development Best Practices](https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-dev-best-practices)
-- [Claude Code Plugin System](https://docs.claude.com/claude-code/plugins)
+- [BC Best Practices](https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-dev-best-practices)
+- [Claude Code Profiles](https://docs.anthropic.com/claude/docs/claude-code)
+
+---
+
+**Full-lifecycle AL development with intelligent agents and document-driven workflow.**

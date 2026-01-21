@@ -1,239 +1,439 @@
----
-**⚠️ CRITICAL ENFORCEMENT RULE - READ FIRST ⚠️**
+# AL Development Profile - Full Lifecycle Workflow
 
-**YOU MUST NEVER CALL MCP TOOLS DIRECTLY IN THIS CONVERSATION.**
+**Version:** 2.8.0
 
-If you need MCP functionality, you MUST spawn an agent:
-- Need docs? → Spawn `mcp-docs-lookup` agent
-- Need code navigation? → Spawn `mcp-serena` agent
-- Need BC specialist? → Use `/home/stefan/.local/bin/bc-expert` via Bash
+## 🎯 Core Principle: Document-Driven Development
 
-**VIOLATION CHECK**: Before ANY tool call, ask yourself:
-- ❓ Am I calling `mcp__serena__*`? → STOP, spawn agent instead
-- ❓ Am I calling `mcp__microsoft_docs_mcp__*`? → STOP, spawn agent instead
+**All agents collaborate via markdown documents in `.dev/` directory.**
 
-**NO EXCEPTIONS.** MCP tools flood the main context with verbose output.
+Main conversation stays clean - agents write detailed results to files, return one-line status updates.
 
----
+## 📁 Development Directory Structure
 
-# AL Development Configuration
-
-This memory file contains AL (Application Language) development guidelines and patterns for Microsoft Dynamics 365 Business Central.
-
-## MCP Tool Isolation & CLI Tools (CRITICAL RULE)
-
-**STRICT RULE: NEVER call MCP tools directly in the main conversation. ALWAYS delegate to agents.**
-
-**Prohibited in main conversation:**
-- ❌ `mcp__serena__*` - Use `mcp-serena` agent instead
-- ❌ `mcp__microsoft_docs_mcp__*` - Use `mcp-docs-lookup` agent instead
-- ❌ `mcp__plugin_profile-al-development_*` - Use agents from table below
-
-**Allowed in main conversation:**
-- ✅ CLI tools via Bash (`bc-expert`, file operations)
-- ✅ Direct file tools (Read, Write, Edit, Glob, Grep)
-- ✅ Git commands
-- ✅ Spawning agents (Task tool)
-
-**Why this matters:** MCP tool results can be verbose (KB of JSON). Agents write to `.review/` files and return concise summaries, keeping main conversation lean.
-
-**ENFORCEMENT - What This Looks Like:**
-
-❌ **WRONG** (Direct MCP call in main conversation):
 ```
-User: "Find all references to Customer.Name"
-Claude: [calls mcp__serena__find_references directly]
-Result: 10KB of JSON floods the context
+.dev/
+├── 01-requirements.md      # Requirements engineering output
+├── 02-solution-plan.md     # Complete solution design + implementation plan
+├── 03-code-review.md       # Code review findings
+├── 04-diagnostics.md       # Compiler diagnostics + fixes
+├── 05-test-plan.md         # Test strategy and plan
+├── 06-test-review.md       # Test review results
+└── session-log.md          # Cross-agent activity log
+```
+
+## 🔄 Development Lifecycle Pipeline
+
+### Phase 1: Planning & Design
+```
+User Request
+    ↓
+1. requirements-engineer → 01-requirements.md
+    ↓
+2. solution-planner → 02-solution-plan.md (uses BC MCP + MS Docs + codebase exploration)
+   - Architecture & design rationale
+   - Implementation steps & code templates
+   - All in one comprehensive document
+```
+
+### Phase 2: Development & Quality (Iterative)
+```
+3. al-developer → writes AL code (reads 02-solution-plan.md)
+    ↓
+4. code-reviewer → 03-code-review.md
+    ├─ If Critical/High issues → ITERATE back to al-developer (step 3)
+    └─ If only Medium/Low → Continue
+    ↓
+5. diagnostics-fixer → 04-diagnostics.md + auto-fixes safe issues
+    ├─ If complex errors (3+ or logic issues) → ITERATE back to al-developer (step 3)
+    └─ If minor/no errors → Continue to testing
+
+Iteration continues until code quality is acceptable (no Critical/High issues, clean/minor compilation)
+```
+
+### Phase 3: Testing & Validation
+```
+6. test-engineer → 05-test-plan.md + writes test code
+    ↓
+7. test-reviewer → 06-test-review.md
+    ↓
+Done ✓
+```
+
+## 🛑 CRITICAL: Approval Gates in Workflows
+
+**When running /dev-cycle or /plan commands, ALWAYS stop for user approval between major phases.**
+
+### Mandatory Approval Points
+
+1. **After Requirements** (01-requirements.md)
+   - Read and summarize key findings (3-5 bullets)
+   - Use AskUserQuestion: Approve / Refine / Stop
+   - Only continue to solution plan if approved
+
+2. **After Solution Plan** (02-solution-plan.md)
+   - Read and summarize solution approach + implementation plan (3-5 bullets)
+   - Use AskUserQuestion: Approve / Refine / Start Implementation / Stop
+   - Only start development if approved
+
+3. **After Code Review** (03-code-review.md)
+   - Summarize review findings
+   - Use AskUserQuestion: Approve / Fix Issues / Stop
+   - Only continue to testing if approved
+
+### Never Auto-Continue
+
+❌ **WRONG:**
+```
+Spawning requirements-engineer...
+Spawning bc-solution-designer...  ← NO! Wait for approval!
+```
+
+✅ **CORRECT:**
+```
+Requirements analysis complete → .dev/01-requirements.md
+
+Key findings:
+- 5 functional requirements
+- 2 BC integration points
+- Credit limit validation on sales posting
+
+[Use AskUserQuestion with Approve/Refine/Stop options]
+
+[Wait for user response before spawning solution-planner]
+```
+
+### Handling User Responses
+
+- **Approve:** Continue to next phase
+- **Refine:** Ask for feedback, re-run same agent with user input
+- **Stop:** End workflow, summarize what's complete
+
+### Why This Matters
+
+- User needs to review and validate each phase
+- Prevents wasted work if direction is wrong
+- Enables iterative refinement
+- Builds trust in the system
+
+### Support Agents (On-Demand)
+- **bc-expert** - BC specialist consultation (any phase)
+- **docs-lookup** - Microsoft docs research (any phase)
+- **dependency-navigator** - Base app exploration (any phase)
+
+**Note:** The solution-planner agent uses these MCP tools internally, so you typically don't need to call support agents separately during planning.
+
+## 🚀 Quick Start Commands
+
+### Quick Bug Fix (Fastest ⚡)
+```
+/fix "Error: Email validation rejects john.doe@example.com"
+```
+Fast track: locate → fix → verify (5 min, no planning/testing)
+
+### Full Development Cycle
+```
+/dev-cycle "Add customer credit limit validation"
+```
+Runs entire pipeline: requirements → design → implementation → code → review → diagnostics → tests
+
+### Individual Phases
+```
+/plan "Feature description"              # Phases 1-3: Planning only
+/develop                                  # Phase 2: Development + review
+/test                                     # Phase 3: Testing
+```
+
+### On-Demand Agents
+```
+/bc-expert "How do I implement custom posting routines?"
+/docs-lookup "Table extension best practices"
+/nav-baseapp "Find all Customer validation events"
+```
+
+## 🛠️ Available MCP Tools
+
+### BC Code Intelligence MCP
+- Domain expertise and BC specialist consultation
+- Base app patterns and best practices
+- Architecture guidance
+- **Tool prefix:** `mcp__bc-code-intelligence-mcp__*`
+
+### Microsoft Docs MCP
+- Official Microsoft Learn documentation
+- API reference lookup
+- AL language documentation
+- **Tool prefix:** `mcp__microsoft_docs_mcp__*`
+
+### AL Dependency MCP
+- Navigate base app objects
+- Explore extension dependencies
+- Find object definitions and references
+- **Tool prefix:** `mcp__al_dependency_mcp__*`
+
+## ⚠️ CRITICAL RULE: MCP Tool Isolation
+
+**NEVER call MCP tools directly in the main conversation.**
+
+❌ **WRONG** (Main conversation):
+```
+Claude: [calls mcp__bc-code-intelligence-mcp__ask directly]
+Result: 10KB of JSON floods context
 ```
 
 ✅ **CORRECT** (Agent delegation):
 ```
-User: "Find all references to Customer.Name"
-Claude: [spawns mcp-serena agent]
-Agent: [uses mcp__serena tools in isolated context]
-Agent: [writes to .review/code-references.md]
-Agent: [returns summary: "Found 47 references across 12 files"]
-Claude: "Found 47 references. Details in .review/code-references.md"
+Claude: [spawns bc-expert agent]
+Agent: [uses MCP tools in isolation]
+Agent: [writes to .dev/expert-consultation.md]
+Agent: [returns "Consultation complete → .dev/expert-consultation.md"]
+Claude: "BC expert consulted. Details in .dev/expert-consultation.md"
 ```
 
-**If you catch yourself about to call an MCP tool:**
-1. STOP immediately
-2. Spawn the appropriate agent instead
-3. Let the agent handle MCP interaction
+**Why?** MCP responses can be verbose (KB of JSON). Agents keep main conversation lean by writing details to files.
 
-### 🚨 TOOL DELEGATION ENFORCEMENT TABLE 🚨
+### Enforcement Table
 
-**CHECK THIS TABLE BEFORE EVERY TOOL CALL:**
+| Need | Use Agent | Never Use Directly |
+|------|-----------|-------------------|
+| Solution planning | `solution-planner` | ❌ MCP tools directly |
+| BC specialist advice | `bc-expert` | ❌ `mcp__bc-code-intelligence-mcp__*` |
+| MS docs lookup | `docs-lookup` | ❌ `mcp__microsoft_docs_mcp__*` |
+| Base app navigation | `dependency-navigator` | ❌ `mcp__al_dependency_mcp__*` |
+| Code review | `code-reviewer` | ❌ Any MCP directly |
 
-| Need | MUST Use | Never Use Directly |
-|------|----------|-------------------|
-| BC specialist advice | **`bc-expert` agent** | ❌ `mcp__bc-code-intelligence-mcp` |
-| BC knowledge base | **`bc-knowledge` agent** | ❌ `mcp__bc-code-intelligence-mcp` |
-| BC code review | **`bc-code-reviewer` agent** | ❌ `mcp__bc-code-intelligence-mcp` |
-| Microsoft docs lookup | **`mcp-docs-lookup` agent** | ❌ `mcp__microsoft_docs_mcp` |
-| Code navigation (Serena) | **`mcp-serena` agent** | ❌ `mcp__serena` |
-| Symbol lookup | **`mcp-serena` agent** | ❌ `mcp__serena` |
-| Find references | **`mcp-serena` agent** | ❌ `mcp__serena` |
+**Note:** solution-planner agent uses all MCP tools internally, keeping main conversation clean.
 
-### BC Specialist Access (via agents ONLY)
+## 🔨 AL Compilation Tool
 
-**NEVER use bc-code-intelligence-mcp tools directly.** Always spawn an agent:
-- `bc-expert` agent - General specialist consultation
-- `bc-knowledge` agent - Knowledge base queries
-- `bc-code-reviewer` agent - Code review with Roger
+**ALWAYS use `al-compile` instead of manual AL compiler commands.**
 
-Agents use MCP tools internally but keep verbose output isolated. They return **one-line status** and write details to `.review/` files.
-
----
-
-**⚠️ REMINDER**: If you just called an MCP tool directly, you violated this rule. Go back and spawn an agent instead. MCP calls in the main conversation are NEVER acceptable.
-
----
-
-## Custom Agents for Large PR Analysis
-
-Agents write all output to `.review/` directory - minimal chat output, full details in files.
-
-### Output Files
-
-```
-.review/
-├── 01-scan.md              # PR overview and chunks
-├── 02-chunk-1.md           # Chunk analysis
-├── 02-chunk-2.md           # Chunk analysis
-├── 02-chunk-N.md           # ...
-├── 03-standards.md         # Naming violations
-├── 04-compiler.md          # AL diagnostics
-├── 05-dependencies.md      # app.json analysis
-├── 99-summary.md           # Final aggregated report
-├── expert-[topic].md       # BC expert consultations
-├── docs-[topic].md         # MS docs lookups
-└── code-[topic].md         # Serena code analysis
-```
-
-### Quick Start
-
-```
-/review-large-pr main..HEAD
-```
-
-### Available Agents
-
-| Agent | Output File | Purpose |
-|-------|-------------|---------|
-| `pr-scanner` | `01-scan.md` | PR overview, suggest chunks |
-| `pr-chunk-analyzer` | `02-chunk-N.md` | Analyze file subset |
-| `al-standards-checker` | `03-standards.md` | Naming violations |
-| `al-compiler` | `04-compiler.md` | Compile diagnostics |
-| `dependency-analyzer` | `05-dependencies.md` | app.json architecture |
-| `review-aggregator` | `99-summary.md` | Combine all results |
-| `bc-expert` | `expert-[topic].md` | BC specialist consult (CLI) |
-| `bc-knowledge` | `knowledge-[topic].md` | BC knowledge base lookup |
-| `bc-code-reviewer` | `[file]-review.md` | BC code review (Roger) |
-| `mcp-docs-lookup` | `docs-[topic].md` | MS Learn docs |
-| `mcp-serena` | `code-[topic].md` | Code navigation |
-
-### Workflow
-
-1. `pr-scanner` → `.review/01-scan.md` (get chunks)
-2. Multiple `pr-chunk-analyzer` in parallel → `.review/02-chunk-*.md`
-3. `al-standards-checker` + `al-compiler` + `dependency-analyzer` in parallel
-4. `review-aggregator` → `.review/99-summary.md`
-
-All agents return one-line status. Read `.review/` files for details.
-
----
-
-## BC Code Intelligence (CLI)
-
-This profile uses the `bc-expert` CLI tool for BC specialist access, reducing MCP overhead while providing full access to specialized Business Central domain experts.
-
-### Available Specialists
-- **Development:** Dean Debug, Sam Coder, Quinn Quality, Isaac Integration
-- **Architecture:** Alex Architect, Uri UX
-- **Performance:** Pat Performance
-- **Review:** Roger Reviewer
-- **Security:** Sam Security
-- **Testing:** Terra Test
-- **Documentation:** Dana Docs
-- **Learning:** Leo Learning
-
-### CLI Usage
-
+### Quick Usage
 ```bash
-# Auto-route to best specialist
-bc-expert ask "How do I optimize table queries?"
-
-# Consult specific specialist
-bc-expert talk-to roger-reviewer "Review this code pattern"
-bc-expert talk-to dean-debug "Performance issues with FindSet"
-bc-expert talk-to pat-performance "Query optimization strategies"
-
-# Find specialist for topic
-bc-expert who-should-help "Security audit for permissions"
-
-# Search knowledge base
-bc-expert search "event subscriber patterns"
-bc-expert get "<topic-id>"
-
-# List specialists
-bc-expert specialists --json
+al-compile                    # Default: compile with all standard analyzers
+al-compile --verbose          # Show detailed compilation info
+al-compile --analyzers all    # Include ALL analyzers
+al-compile --clean            # Clean .alpackages before compile
 ```
 
-### When to Use BC Code Intelligence
-- **Complex problems:** Route questions to appropriate domain experts
-- **Code reviews:** Use `bc-code-reviewer` agent (Roger Reviewer)
-- **Security concerns:** `bc-expert talk-to sam-security`
-- **Performance issues:** `bc-expert talk-to pat-performance`
-- **Best practices:** `bc-expert ask` with auto-routing
-- **Knowledge lookup:** `bc-knowledge` agent for knowledge base queries
+### What It Does Automatically
+✅ **Auto-detects VS Code AL extension** and uses matching compiler version
+✅ **Auto-detects workspace structure** (single vs multi-app)
+✅ **Auto-finds all `.alpackages` directories** for transitive dependencies
+✅ **Auto-applies ruleset files** (workspace or project level)
+✅ **Auto-includes AppSourceCop** if `AppSourceCop.json` exists
+✅ **Warns if AppSourceCop config missing** when explicitly enabled
 
-## AL Language Conventions
+### Default Analyzers
+When you run `al-compile` without options, it includes:
+- **CodeCop** - Code quality and best practices
+- **UICop** - User interface rules
+- **PerTenantExtensionCop** - Extension-specific rules
+- **LinterCop** - Additional quality checks
+- **AppSourceCop** - Only if `AppSourceCop.json` exists in project
+
+### Options
+```bash
+--analyzers <mode>    # Analyzer mode:
+                      #   default: Standard set (+ AppSourceCop if config exists)
+                      #   all: All analyzers including AppSourceCop
+                      #   none: No analyzers
+                      #   list: Custom comma-separated (e.g., CodeCop,UICop)
+
+--output <file>       # Error log location (default: .dev/compile-errors.log)
+--clean               # Clean .alpackages before compiling
+--no-parallel         # Disable parallel compilation
+--verbose, -v         # Show detailed output
+--help, -h           # Show help
+```
+
+### Why Use This Instead of Manual AL Commands?
+
+**Manual compilation is complex:**
+```bash
+# What you'd need to do manually (15+ steps):
+1. Find AL extension directory
+2. Detect workspace structure
+3. Find all .alpackages directories
+4. Build semicolon-separated package paths
+5. Find all analyzer DLLs
+6. Build analyzer arguments
+7. Find ruleset files
+8. Use correct compiler version (match analyzers)
+9. Enable external rulesets
+10. Set parallel compilation
+... (see diagnostics-fixer.md for full complexity)
+```
+
+**With al-compile:**
+```bash
+al-compile  # Done! All the above handled automatically
+```
+
+### Examples
+
+**Basic compile:**
+```bash
+al-compile
+```
+
+**Verbose output to see what's happening:**
+```bash
+al-compile --verbose
+```
+
+**Include all analyzers (even without AppSourceCop.json):**
+```bash
+al-compile --analyzers all
+```
+
+**Custom analyzer selection:**
+```bash
+al-compile --analyzers "CodeCop,UICop,LinterCop"
+```
+
+**Clean and compile:**
+```bash
+al-compile --clean
+```
+
+### Integration with Agents
+
+**diagnostics-fixer agent** automatically uses `al-compile` to:
+1. Run compilation with all analyzers
+2. Parse error log from `.dev/compile-errors.log`
+3. Auto-fix safe issues
+4. Recompile to verify fixes
+
+**All agents should use `al-compile` for any compilation needs.**
+
+### Troubleshooting
+
+**If `al-compile` command not found:**
+```bash
+source ~/.bashrc  # Reload PATH in current terminal
+# Or open a new terminal
+```
+
+**If analyzers show version warnings:**
+- Extension compiler version: `~/.vscode/extensions/ms-dynamics-smb.al-*/bin/linux/alc`
+- Analyzer DLLs: `~/.vscode/extensions/ms-dynamics-smb.al-*/bin/Analyzers/`
+- Both should match - `al-compile` handles this automatically
+
+## 🎯 Agent Design Principles
+
+### 1. Single Responsibility
+Each agent does ONE thing well:
+- Requirements engineer extracts requirements
+- Designer designs BC integration
+- Developer writes code
+- Reviewer reviews code
+
+### 2. Read Previous Context
+Each agent reads predecessor's output:
+```markdown
+# In solution-planner agent
+1. Read .dev/01-requirements.md
+2. Research BC patterns using MCP tools
+3. Create comprehensive solution plan (design + implementation)
+4. Write to .dev/02-solution-plan.md
+
+# In al-developer agent
+1. Read .dev/02-solution-plan.md
+2. Implement code following the plan
+3. Write AL source files
+```
+
+### 3. Minimal Chat Output
+Agents return concise status:
+```
+Solution plan complete → .dev/02-solution-plan.md
+
+Architecture summary:
+- 2 table extensions
+- 1 event subscriber
+- 1 page extension
+
+Implementation summary:
+- 4 files to create
+- 3 phases
+- Ready for development
+```
+
+### 4. Update Session Log
+Every agent appends to `.dev/session-log.md`:
+```markdown
+## [Timestamp] solution-planner
+- Input: .dev/01-requirements.md
+- Consulted BC Intelligence MCP for posting patterns
+- Researched MS Docs for event subscribers
+- Explored base app objects
+- Designed solution with 2 extensions, 1 event
+- Planned 4 files in 3 phases
+- Output: .dev/02-solution-plan.md
+```
+
+### 5. Support Iteration
+Agents can be re-invoked:
+```
+User: "The solution plan needs to use a separate validation codeunit"
+Claude: [spawns solution-planner again, reads 01-requirements.md + user feedback]
+Agent: [updates .dev/02-solution-plan.md with revised approach]
+```
+
+## 📋 Agent Capabilities Matrix
+
+| Agent | Input | Output | MCP Tools Used |
+|-------|-------|--------|----------------|
+| requirements-engineer | User request | 01-requirements.md | None |
+| solution-planner | 01-requirements.md | 02-solution-plan.md | BC Intel, MS Docs, AL Dep |
+| al-developer | 02-solution-plan.md | AL code files | None |
+| code-reviewer | Code files | 03-code-review.md | None |
+| diagnostics-fixer | Compiler output | 04-diagnostics.md + fixes | None |
+| test-engineer | 02+code | 05-test-plan.md + tests | None |
+| test-reviewer | Test code | 06-test-review.md | None |
+| bc-expert | Question | expert-*.md | BC Intel |
+| docs-lookup | Question | docs-*.md | MS Docs |
+| dependency-navigator | Query | nav-*.md | AL Dependency |
+
+## 🔧 AL Coding Standards (Quick Reference)
 
 ### Object Naming
-- Use PascalCase for all objects (tables, pages, codeunits, reports)
-- Prefix custom objects with company/app abbreviation
-- Table names should be singular nouns (e.g., `Customer`, `SalesHeader`)
-- Page names should match table names with type suffix when needed (e.g., `CustomerCard`, `CustomerList`)
-- Codeunit names should be descriptive of their purpose
+- **PascalCase** for all objects
+- **Prefix** custom objects with company/app abbreviation
+- **Table names**: Singular nouns (`Customer`, `SalesHeader`)
+- **Page names**: Match table + type suffix (`CustomerCard`, `CustomerList`)
+- **Codeunit names**: Descriptive of purpose
 
 ### Field Naming
-- Use PascalCase for field names
-- Boolean fields should start with verbs (e.g., `IsBlocked`, `HasCustomer`)
-- Date fields should end with `Date` (e.g., `PostingDate`, `ShipmentDate`)
-- Avoid abbreviations unless industry standard
+- **PascalCase** for field names
+- **Boolean fields**: Start with verbs (`IsBlocked`, `HasCustomer`)
+- **Date fields**: End with `Date` (`PostingDate`, `ShipmentDate`)
+- **Avoid abbreviations** unless industry standard
 
 ### Code Style
-- Always use explicit typing, avoid `variant` when possible
-- Prefer local procedures over global when appropriate
-- Use meaningful variable names (e.g., `Customer` not `Cust`)
-- Add XML documentation comments for public procedures
-- Group variables logically (parameters, return values, local vars)
+- **Explicit typing** - avoid `variant` when possible
+- **Local procedures** over global when appropriate
+- **Meaningful names** (`Customer` not `Cust`)
+- **XML documentation** for public procedures
+- **Group variables** logically (parameters, return values, locals)
 
 ### AL Best Practices
-- Use table extensions instead of modifying base tables
-- Implement proper error handling with meaningful error messages
-- Prefer events (subscribers) over modifying base application code
-- Use temporary tables for processing when appropriate
-- Always validate user input in pages and APIs
-- Follow the single responsibility principle for codeunits
+- **Table extensions** instead of modifying base tables
+- **Error handling** with meaningful messages
+- **Events (subscribers)** over modifying base code
+- **Temporary tables** for processing
+- **Validate user input** in pages/APIs
+- **Single responsibility** for codeunits
 
-### Testing
-- Write test codeunits for critical business logic
-- Use test isolation principles (setup, execute, verify, teardown)
-- Mock external dependencies
-- Test both positive and negative scenarios
+### Performance
+- **SetLoadFields** to optimize data loading
+- **FindSet** for iteration (not `Find('-')`)
+- **Filter before loading** records
+- **Cautious with LOCKTABLE** in multi-user scenarios
+- **Batch operations** for bulk data
 
-### Performance Considerations
-- Use SetLoadFields to optimize data loading
-- Avoid unnecessary loops, prefer FindSet for iteration
-- Use filtering before loading records
-- Be cautious with LOCKTABLE in multi-user scenarios
-- Consider batch operations for bulk data processing
+## 📝 Standard Event Pattern
 
-## Common AL Patterns
-
-### Event Pattern
 ```al
 [EventSubscriber(ObjectType::Table, Database::Customer, 'OnBeforeInsertEvent', '', false, false)]
 local procedure OnBeforeInsertCustomer(var Rec: Record Customer)
@@ -242,23 +442,189 @@ begin
 end;
 ```
 
-### Error Handling Pattern
+## 🔍 Error Handling Pattern
+
 ```al
 if not SomeCondition then
     Error('Clear error message: %1', Value);
 ```
 
-## Project Structure
-- Keep related functionality together in subfolders
-- Separate tables, pages, codeunits, reports into dedicated folders
-- Use consistent file naming: `ObjectType.ObjectName.al`
+## 📂 Project Structure
 
-## Commands to Remember
-When working with AL projects:
-- `alc` or `ctrl+shift+b` - Compile current project
-- Use AL Language extension features for navigation
-- Leverage code snippets (t, p, c, r for table, page, codeunit, report)
+- **Related functionality together** in subfolders
+- **Separate folders** for tables, pages, codeunits, reports
+- **File naming**: `ObjectType.ObjectName.al`
+
+## 💡 Common Workflows
+
+### Workflow 0: Quick Bug Fix (Fastest - 5 minutes)
+```
+1. /fix "Error message or bug description"
+2. Review proposed fix
+3. Approve → diagnostics run
+4. Done! Commit the fix
+```
+
+**Best for:**
+- Compiler errors
+- Small logic bugs
+- Validation errors
+- Quick corrections
+
+**Skips:** Planning, design, testing (just fix + verify)
+
+### Workflow A: All-in-One (Fast)
+```
+1. /dev-cycle "Feature description"
+2. Approve each phase when prompted (requirements → solution plan → dev → test)
+3. Done! All artifacts in .dev/
+```
+
+### Workflow B: Plan First, Implement Later (Recommended)
+```
+Session 1 - Planning:
+1. /plan "Feature description"
+2. Approve requirements → solution plan
+3. Review .dev/02-solution-plan.md carefully offline
+4. Share plan with team if needed
+5. Stop here
+
+Session 2 - Implementation (same day or later):
+6. /develop
+   OR /dev-cycle "..." (will detect existing plan and ask to reuse)
+7. Agent implements code based on approved plan
+8. Review .dev/03-code-review.md
+9. Done with development
+
+Session 3 - Testing:
+10. /test
+11. Review .dev/06-test-review.md
+12. Complete!
+```
+
+**Why Workflow B is better:**
+- Planning can be reviewed at your pace
+- No pressure during approval gates
+- Can implement hours/days later
+- Team can review plan before coding starts
+- Separates thinking from doing
+
+### Starting a New Feature (Detailed)
+```
+1. /dev-cycle "Feature description"
+2. Review .dev/01-requirements.md - approve or refine
+3. Review .dev/02-solution-plan.md - approve architecture & implementation plan
+4. Agent implements code
+5. Review .dev/03-code-review.md
+6. Agent fixes diagnostics
+7. Agent writes tests
+8. Review .dev/06-test-review.md
+9. Done!
+```
+
+### Debugging Existing Code
+```
+1. /diagnostics-fixer
+2. Review .dev/04-diagnostics.md
+3. Agent fixes issues
+4. Recompile, verify
+```
+
+### Understanding Base App Integration
+```
+1. /nav-baseapp "Find Customer posting events"
+2. Review .dev/nav-customer-events.md
+3. /bc-expert "Best practice for extending Customer posting"
+4. Review .dev/expert-posting-patterns.md
+5. Implement with guidance
+```
+
+### Code Review Existing Changes
+```
+1. /code-reviewer
+2. Review .dev/03-code-review.md
+3. Address findings
+4. /diagnostics-fixer
+5. Verify improvements
+```
+
+## 🎓 When to Use Support Agents
+
+### bc-expert
+- Complex BC patterns (posting routines, integration patterns)
+- Architecture decisions (how to extend base app)
+- Performance optimization strategies
+- Security concerns (permission sets, field security)
+
+### docs-lookup
+- Official Microsoft documentation needed
+- API reference for base app objects
+- AL language features and syntax
+- Breaking changes in BC versions
+
+### dependency-navigator
+- Find base app objects and their structure
+- Understand table relationships
+- Locate events and extension points
+- Explore existing extension patterns
+
+## 📊 Session Log Format
+
+`.dev/session-log.md` tracks all agent activity:
+
+```markdown
+# Development Session Log
+
+**Started:** 2026-01-14 10:30:00
+**Project:** Customer Credit Limit Feature
+
+## [10:30:15] requirements-engineer
+- Input: "Add customer credit limit validation"
+- Extracted 5 functional requirements
+- Identified 2 base app touchpoints
+- Output: .dev/01-requirements.md
+- Status: ✓ Complete
+
+## [10:32:40] solution-planner
+- Input: .dev/01-requirements.md
+- Consulted BC MCP for Customer table extension patterns
+- Researched MS Docs for validation patterns
+- Explored base app objects
+- Designed event subscriber approach with 2 extensions
+- Planned step-by-step implementation (3 files, 4 phases)
+- Output: .dev/02-solution-plan.md
+- Status: ✓ Complete
+
+[... continues ...]
+```
+
+## 🔄 Iteration & Refinement
+
+Agents support iterative refinement:
+
+```
+User: "Actually, let's use a separate validation codeunit instead"
+
+Claude: [spawns implementation-planner again]
+Agent: [reads 01+02, applies new constraint, updates 03]
+Agent: "Implementation plan revised → .dev/03-implementation.md"
+```
+
+All previous context preserved in documents - agents adapt to feedback.
+
+## ✅ Success Criteria
+
+A complete development cycle produces:
+- ✓ Clear requirements document
+- ✓ Comprehensive solution plan (architecture + implementation)
+- ✓ Working AL code
+- ✓ Code review with findings
+- ✓ Clean compilation (no errors)
+- ✓ Comprehensive tests
+- ✓ Test review confirmation
+
+**All documented in `.dev/` for future reference.**
 
 ---
 
-*Note: This configuration is shared across your AL development projects. Update it when you discover new patterns or best practices, and all your projects will benefit.*
+*This profile enables full-lifecycle AL development with collaborative agents and document-driven workflow.*
