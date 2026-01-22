@@ -1,8 +1,8 @@
 # AL Development Profile - Full Lifecycle
 
-**Version:** 2.8.0
+**Version:** 2.10.1
 
-Claude Code profile for Microsoft Dynamics 365 Business Central AL development with complete lifecycle support.
+Claude Code profile for Microsoft Dynamics 365 Business Central AL development with intelligent complexity routing and proportional planning.
 
 ## Overview
 
@@ -11,6 +11,9 @@ This profile provides a document-driven development workflow with specialized ag
 ## Key Features
 
 - **Document-Driven Workflow** - All agents collaborate via `.dev/` markdown files
+- **Project Memory System** - 40-60% faster workflows via `.dev/project-context.md`
+- **Smart Complexity Routing** - Automatically matches workflow to task complexity
+- **Proportional Planning** - Simple tasks get concise plans, complex tasks get comprehensive docs
 - **Full Lifecycle Coverage** - Requirements → Design → Implementation → Testing
 - **MCP Integration** - BC Intelligence, Microsoft Docs, AL Dependency navigation
 - **Automated Workflows** - Complete development cycles with single commands

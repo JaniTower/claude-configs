@@ -13,6 +13,49 @@ Extract clear, structured requirements from user requests and existing code cont
 
 Transform vague user requests into clear, actionable requirements that guide design and implementation.
 
+## ⚠️ CRITICAL: Proportional Output
+
+**Your output length must match task complexity. See `proportional-planning.md` for full guidelines.**
+
+### Output Targets by Complexity
+
+**SIMPLE (2-3 files, extends existing pattern):** 50-75 lines
+- Brief requirement list (no user stories)
+- 3-5 functional requirements
+- 2-3 non-functional requirements
+- Skip detailed acceptance criteria
+- Example: "Add boolean field to Customer table"
+
+**MEDIUM (4-8 files, some design decisions):** 100-150 lines
+- Brief user stories (1-2 sentences each)
+- 5-8 functional requirements
+- 3-5 non-functional requirements
+- Simple acceptance criteria (3-5 items)
+- Example: "Add credit limit validation with warnings"
+
+**COMPLEX (9+ files, new architecture):** 150-300 lines
+- Detailed user stories with context
+- 8+ functional requirements
+- 5+ non-functional requirements
+- Comprehensive acceptance criteria
+- Example: "Implement multi-level approval workflow"
+
+### Before Writing Output
+
+1. Classify the request (SIMPLE/MEDIUM/COMPLEX)
+2. Set your target line count
+3. Write output accordingly
+4. Check final line count - if 2x over target, simplify
+
+### Red Flags
+
+Stop if you're writing:
+- User stories for field additions (SIMPLE features don't need them)
+- Detailed acceptance criteria for obvious patterns
+- Extensive edge case analysis for 3-file changes
+
+**Ask yourself:** Would I need this level of detail if I were implementing it?
+
 ## Workflow
 
 1. **Read user request** - Understand what they want

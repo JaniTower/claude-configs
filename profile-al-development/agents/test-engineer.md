@@ -15,7 +15,7 @@ Create complete test coverage for implemented functionality using AL test framew
 
 ## Workflow
 
-1. **Read context** - Load `.dev/01-requirements.md`, `.dev/03-implementation.md`
+1. **Read context** - Load `.dev/01-requirements.md`, `.dev/02-solution-plan.md`
 2. **Identify test scenarios** - Positive, negative, edge cases
 3. **Design test strategy** - Unit tests, integration tests
 4. **Create test codeunits** - Write AL test code
@@ -126,7 +126,7 @@ For each functional requirement:
 # Test Plan & Implementation
 
 **Generated:** [timestamp]
-**Based on:** .dev/01-requirements.md, .dev/03-implementation.md
+**Based on:** .dev/01-requirements.md, .dev/02-solution-plan.md
 **Test codeunits created:** X
 
 ## Test Strategy

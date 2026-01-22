@@ -1,25 +1,56 @@
 # AL Development Profile - Full Lifecycle Workflow
 
-**Version:** 2.8.0
+**Version:** 2.10.1
 
-## 🎯 Core Principle: Document-Driven Development
+## 🎯 Core Principles
 
+### 1. Document-Driven Development
 **All agents collaborate via markdown documents in `.dev/` directory.**
 
 Main conversation stays clean - agents write detailed results to files, return one-line status updates.
+
+### 2. Project Memory System (Performance Optimization)
+**Project context prevents redundant exploration.**
+
+- `.dev/project-context.md` documents project structure, patterns, and objects
+- ALL agents read context FIRST before exploration (saves 5-15 min per workflow)
+- Agents update context when they learn something new
+- Initialize with `/init-context` (one-time 2-3 min setup)
+
+### 3. Smart Workflow Routing
+**Match complexity to workflow - avoid overkill for simple changes.**
+
+- See `workflow-routing.md` for classification system
+- TRIVIAL (2-5 min): Direct fix, skip all agents
+- SIMPLE (5-15 min): Lightweight planning + implementation + review
+- MEDIUM (20-40 min): Balanced planning + development, skip testing
+- COMPLEX (45-90 min): Full pipeline with comprehensive planning
+
+### 4. Proportional Planning
+**Planning detail must match implementation complexity.**
+
+- See `proportional-planning.md` for detailed guidelines
+- SIMPLE: 100-150 lines total (no ASCII art, no alternatives analysis)
+- MEDIUM: 200-400 lines total (balanced detail)
+- COMPLEX: 400-800 lines total (comprehensive documentation)
+- Prevents 946-line plans for 3-file changes
 
 ## 📁 Development Directory Structure
 
 ```
 .dev/
-├── 01-requirements.md      # Requirements engineering output
-├── 02-solution-plan.md     # Complete solution design + implementation plan
-├── 03-code-review.md       # Code review findings
-├── 04-diagnostics.md       # Compiler diagnostics + fixes
-├── 05-test-plan.md         # Test strategy and plan
-├── 06-test-review.md       # Test review results
-└── session-log.md          # Cross-agent activity log
+├── project-context.md       # 🆕 Project memory (read first, saves 5-15 min!)
+├── workflow-state.json      # 🆕 Current workflow state (for /status)
+├── 01-requirements.md       # Requirements engineering output
+├── 02-solution-plan.md      # Complete solution design + implementation plan
+├── 03-code-review.md        # Code review findings
+├── 04-diagnostics.md        # Compiler diagnostics + fixes
+├── 05-test-plan.md          # Test strategy and plan
+├── 06-test-review.md        # Test review results
+└── session-log.md           # Cross-agent activity log
 ```
+
+**🚀 Performance Tip:** Run `/init-context` once to create `project-context.md`. This documents your project structure so agents don't explore from scratch every time, reducing workflow runtime by 40-60%.
 
 ## 🔄 Development Lifecycle Pipeline
 
@@ -124,11 +155,17 @@ Key findings:
 
 ## 🚀 Quick Start Commands
 
+### Setup (Run Once)
+```
+/init-context                # Initialize project memory (2-3 min)
+                             # Speeds up ALL future workflows by 40-60%
+```
+
 ### Quick Bug Fix (Fastest ⚡)
 ```
 /fix "Error: Email validation rejects john.doe@example.com"
 ```
-Fast track: locate → fix → verify (5 min, no planning/testing)
+Fast track: locate → fix → verify (2-5 min, no planning/testing)
 
 ### Full Development Cycle
 ```
@@ -138,9 +175,14 @@ Runs entire pipeline: requirements → design → implementation → code → re
 
 ### Individual Phases
 ```
-/plan "Feature description"              # Phases 1-3: Planning only
+/plan "Feature description"              # Phases 1-2: Planning only
 /develop                                  # Phase 2: Development + review
 /test                                     # Phase 3: Testing
+```
+
+### Workflow Management
+```
+/status                      # Show current workflow state & progress
 ```
 
 ### On-Demand Agents
@@ -607,7 +649,7 @@ User: "Actually, let's use a separate validation codeunit instead"
 
 Claude: [spawns implementation-planner again]
 Agent: [reads 01+02, applies new constraint, updates 03]
-Agent: "Implementation plan revised → .dev/03-implementation.md"
+Agent: "Implementation plan revised → .dev/02-solution-plan.md"
 ```
 
 All previous context preserved in documents - agents adapt to feedback.

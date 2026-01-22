@@ -225,7 +225,7 @@ Use `Task` tool to spawn agents in sequence with approval gates:
 
 1. Spawn `implementation-planner` agent (reads requirements + design)
 2. **Wait for completion**
-3. Read `.dev/03-implementation.md`
+3. Read `.dev/02-solution-plan.md`
 4. Show summary (file count, phases, key components)
 5. **No approval gate** - proceed to Phase 4
 
@@ -235,7 +235,7 @@ Use `Task` tool to spawn agents in sequence with approval gates:
 
 ### Extract components from implementation plan
 
-Read `.dev/03-implementation.md` and identify all deliverables:
+Read `.dev/02-solution-plan.md` and identify all deliverables:
 
 **Component types:**
 - Table extensions
@@ -492,7 +492,7 @@ Required before starting:
 
 - Requirements: `.dev/01-requirements.md`
 - Design: `.dev/02-design.md`
-- Implementation Plan: `.dev/03-implementation.md`
+- Implementation Plan: `.dev/02-solution-plan.md`
 - Expert Consultations: `.dev/expert-*.md` (if consulted)
 - Interview Notes: `.dev/00-interview.md` (if conducted)
 
@@ -522,7 +522,7 @@ After writing `.dev/estimation.md`, show:
 - .dev/estimation.md (detailed estimation)
 - .dev/01-requirements.md
 - .dev/02-design.md
-- .dev/03-implementation.md
+- .dev/02-solution-plan.md
 [- .dev/00-interview.md (if interview ran)]
 [- .dev/expert-*.md (if experts consulted)]
 
@@ -637,7 +637,7 @@ User: Approve
 
 Step 3: Implementation Planning
 Spawning implementation-planner...
-✓ Implementation plan → .dev/03-implementation.md
+✓ Implementation plan → .dev/02-solution-plan.md
 
 Components identified:
 - 1x Table Extension

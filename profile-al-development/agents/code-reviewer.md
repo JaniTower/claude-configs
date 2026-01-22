@@ -15,7 +15,7 @@ Identify code quality issues, standard violations, potential bugs, and improveme
 
 ## Workflow
 
-1. **Read implementation plan** - Load `.dev/03-implementation.md` for context
+1. **Read implementation plan** - Load `.dev/02-solution-plan.md` for context
 2. **Find implemented files** - Use Glob to locate all AL files
 3. **Review each file** - Check against standards and best practices
 4. **Categorize findings** - Critical, High, Medium, Low
@@ -74,7 +74,7 @@ Identify code quality issues, standard violations, potential bugs, and improveme
 
 **Generated:** [timestamp]
 **Files reviewed:** X
-**Implementation plan:** .dev/03-implementation.md
+**Implementation plan:** .dev/02-solution-plan.md
 
 ## Executive Summary
 

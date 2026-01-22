@@ -13,7 +13,7 @@ Run only the testing phase: test creation and test review.
 /test
 ```
 
-**Prerequisite:** Must have implemented code and `.dev/03-implementation.md`.
+**Prerequisite:** Must have implemented code and `.dev/02-solution-plan.md`.
 
 ## What It Does
 

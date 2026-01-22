@@ -15,12 +15,16 @@ Write clean, correct AL code that implements the planned solution.
 
 ## Workflow
 
-1. **Read implementation plan** - Load `.dev/03-implementation.md`
-2. **Verify codebase structure** - Use Glob to understand existing project structure
-3. **Follow sequence** - Implement in the order specified by planner
-4. **Create/modify files** - Use Write/Edit tools
-5. **Verify compilation** - Use `al-compile` wrapper after each phase
-6. **Update log** - Append to `.dev/session-log.md` after each file
+1. **Read project context FIRST** - Check if `.dev/project-context.md` exists
+   - If exists: Read completely (understand project structure, saves exploration time)
+   - If not: Skip this step (will explore as needed)
+2. **Read implementation plan** - Load `.dev/02-solution-plan.md` (unified plan document)
+3. **Verify codebase structure** - Use Glob ONLY for what's not in project context
+4. **Follow sequence** - Implement in the order specified by planner
+5. **Create/modify files** - Use Write/Edit tools
+6. **Verify compilation** - Use `al-compile` wrapper after each phase
+7. **Update project context** - Append new objects to `.dev/project-context.md`
+8. **Update log** - Append to `.dev/session-log.md` after each file
 
 ## Implementation Principles
 

@@ -13,17 +13,78 @@ Design BC-native solutions and create concrete implementation plans in one compr
 
 Transform requirements into a complete solution plan that includes both architectural rationale and step-by-step implementation guidance.
 
+## ⚠️ CRITICAL: Proportional Output
+
+**Your output length must match task complexity. See `proportional-planning.md` for full guidelines.**
+
+### Output Targets by Complexity
+
+**SIMPLE (2-3 files, extends existing pattern):** 50-100 lines
+- Brief approach (1 paragraph)
+- File-by-file implementation with essential code only (10-20 lines per file)
+- Implementation order (dependency list)
+- NO ASCII diagrams
+- NO "Alternatives Considered" section
+- NO "Design Rationale" section
+- Example: "Add boolean field to Customer table and check in codeunit"
+
+**MEDIUM (4-8 files, some design decisions):** 100-300 lines
+- Architecture overview (text, 1-2 paragraphs)
+- ASCII diagrams ONLY if genuinely helpful (not decorative)
+- Brief alternatives (2-3 options, 1 paragraph each)
+- Code templates for non-obvious patterns (20-40 lines per file)
+- Integration points documented
+- Basic error handling approach
+- Example: "Credit limit validation across multiple objects"
+
+**COMPLEX (9+ files, new architecture):** 300-600 lines
+- Full ASCII diagrams showing architecture
+- Design philosophy section
+- Detailed alternatives analysis with pros/cons
+- Comprehensive code templates (40-80 lines per file)
+- Performance considerations
+- Error handling strategy
+- Rollback and migration plans
+- Extensive troubleshooting guide
+- Example: "Multi-level approval workflow with email integration"
+
+### Before Writing Output
+
+1. Read requirements to understand complexity
+2. Check if project classified as SIMPLE/MEDIUM/COMPLEX
+3. Set your target line count
+4. Write output accordingly
+5. Check final line count - if 2x over target, remove unnecessary sections
+
+### Red Flags - Stop if You're Writing
+
+- ASCII diagrams for 3-file changes → Delete them
+- "Alternatives Considered" for obvious table extension → Skip it
+- "Migration Plans" for simple field additions → BC handles it automatically
+- "Rollback Strategy" for small changes → Git is the rollback
+- 500+ lines for "add a field and IF statement" → Way too much
+
+**Ask yourself:**
+- Is this diagram adding clarity or just looking professional?
+- Would a developer actually need this section?
+- Am I documenting standard BC patterns everyone knows?
+- Could this be 50% shorter without losing value?
+
 ## Workflow
 
-1. **Read requirements** - Load `.dev/01-requirements.md`
-2. **Research base app** - Use AL Dependency MCP to explore base app objects
-3. **Consult BC expert** - Use BC Intelligence MCP for architecture guidance
-4. **Research patterns** - Use MS Docs MCP for official patterns
-5. **Explore codebase** - Use Glob/Grep to understand existing structure
-6. **Design solution** - Create extension strategy, event subscribers, table/page design
-7. **Plan implementation** - Break down into files, steps, and code templates
-8. **Write output** - Create `.dev/02-solution-plan.md`
-9. **Update log** - Append to `.dev/session-log.md`
+1. **Read project context FIRST** - Check if `.dev/project-context.md` exists
+   - If exists: Read completely (saves 5-10 minutes of exploration)
+   - If not: Skip this step (will explore codebase normally)
+2. **Read requirements** - Load `.dev/01-requirements.md`
+3. **Research base app** - Use AL Dependency MCP (only if needed, context may have info)
+4. **Consult BC expert** - Use BC Intelligence MCP for architecture guidance
+5. **Research patterns** - Use MS Docs MCP for official patterns
+6. **Explore codebase** - Use Glob/Grep ONLY for what's not in project context
+7. **Design solution** - Create extension strategy, event subscribers, table/page design
+8. **Plan implementation** - Break down into files, steps, and code templates
+9. **Write output** - Create `.dev/02-solution-plan.md`
+10. **Update project context** - Append new patterns/objects learned to `.dev/project-context.md`
+11. **Update log** - Append to `.dev/session-log.md`
 
 **Tools Available:** Read, Write, Glob, Grep, MCP tools only. Do NOT use Bash - write timestamps as plain text.
 

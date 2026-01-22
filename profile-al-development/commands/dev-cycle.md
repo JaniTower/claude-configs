@@ -229,7 +229,7 @@ All phases write to `.dev/` directory:
 
 # OR just:
 /develop
-# Uses existing 03-implementation.md
+# Uses existing 02-solution-plan.md
 
 # Session 3: Testing
 /test

@@ -13,7 +13,7 @@ Run only the development phase with automatic iteration loops for quality.
 /develop
 ```
 
-**Prerequisite:** Must have `.dev/03-implementation.md` from planning phase.
+**Prerequisite:** Must have `.dev/02-solution-plan.md` from planning phase.
 
 ## What It Does
 
@@ -69,7 +69,7 @@ Runs development agents with iteration loops:
 
 ## When to Use
 
-- Have implementation plan ready (`.dev/03-implementation.md`)
+- Have implementation plan ready (`.dev/02-solution-plan.md`)
 - Want to implement existing plan with quality checks
 - Re-implementing after design changes
 - Continuing from `/plan` command
