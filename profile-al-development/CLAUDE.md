@@ -1,6 +1,6 @@
 # AL Development Profile - Full Lifecycle Workflow
 
-**Version:** 2.12.0
+**Version:** 2.13.0
 
 ## 🎯 Core Principles
 
@@ -39,8 +39,7 @@ Main conversation stays clean - agents write detailed results to files, return o
 
 ```
 .dev/
-├── project-context.md       # 🆕 Project memory (read first, saves 5-15 min!)
-├── workflow-state.json      # 🆕 Current workflow state (for /status)
+├── project-context.md       # Project memory (read first, saves 5-15 min!)
 ├── 01-requirements.md       # Requirements engineering output
 ├── 02-solution-plan.md      # Complete solution design + implementation plan
 ├── 03-code-review.md        # Code review findings
@@ -48,9 +47,36 @@ Main conversation stays clean - agents write detailed results to files, return o
 ├── 05-test-plan.md          # Test strategy and plan
 ├── 06-test-review.md        # Test review results
 └── session-log.md           # Cross-agent activity log
+
+~/.claude/tasks/             # 🆕 Native task persistence (survives sessions!)
 ```
 
 **🚀 Performance Tip:** Run `/init-context` once to create `project-context.md`. This documents your project structure so agents don't explore from scratch every time, reducing workflow runtime by 40-60%.
+
+## 🔄 Task Coordination System (NEW in v2.13)
+
+**Tasks replace manual workflow tracking with native Claude Code capabilities.**
+
+### Key Benefits
+- **Persistence:** Tasks survive session restarts (`~/.claude/tasks/`)
+- **Dependencies:** Tasks block/unblock each other automatically
+- **Multi-agent:** Subagents share task lists via `CLAUDE_CODE_TASK_LIST_ID`
+- **Broadcasting:** Updates sync across all sessions on same list
+
+### Task Structure for Development Cycle
+```
+Requirements → blocks → Planning → blocks → Development → blocks → Review → blocks → Testing
+```
+
+Each phase is a Task with dependencies. Agents update task status as they work.
+
+### Multi-Session Coordination
+```bash
+# Share task list across sessions/subagents
+CLAUDE_CODE_TASK_LIST_ID=<id> claude
+```
+
+See `task-coordination.md` for full details.
 
 ## 🔄 Development Lifecycle Pipeline
 

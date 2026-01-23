@@ -1,37 +1,28 @@
 # Command: /status
 
-Show current workflow state, progress, and project context status.
+Show current workflow state, progress, and project context status using native Tasks.
 
 ## Purpose
 
 Quick overview of:
-- Current workflow phase (if any workflow active)
-- Completed phases
+- Current tasks and their status
+- Blocked/unblocked tasks
 - Project context status
 - Recent agent activity
-- Pending approvals
 
 ## Implementation
 
-### Step 1: Check Workflow State
+### Step 1: Check Tasks
 
-Look for `.dev/workflow-state.json`:
+Use `TaskList` to get all current tasks:
 
-```json
-{
-  "workflow_id": "uuid",
-  "workflow_type": "dev-cycle",
-  "started": "2026-01-22T10:30:00Z",
-  "current_phase": "development",
-  "completed_phases": ["requirements", "solution-planning"],
-  "pending_approval": false,
-  "last_agent": "al-developer",
-  "iteration_count": 2,
-  "documents_created": [
-    ".dev/01-requirements.md",
-    ".dev/02-solution-plan.md"
-  ]
-}
+```
+TaskList → Returns all tasks with:
+  - id
+  - subject
+  - status (pending/in_progress/completed)
+  - owner
+  - blockedBy (list of blocking task IDs)
 ```
 
 ### Step 2: Check Project Context
@@ -49,60 +40,56 @@ Read last 5 entries from `.dev/session-log.md` to show recent activity.
 ```
 # Workflow Status
 
-## Current Workflow: Development Cycle
-Started: 2026-01-22 10:30:00 (45 minutes ago)
+## Current Tasks
 
-Progress:
-✓ Requirements Analysis (01-requirements.md)
-✓ Solution Planning (02-solution-plan.md)
-⚙ Development (in progress - iteration 2)
-  └─ Last: al-developer (5 min ago)
-⏳ Code Review (pending)
-⏳ Diagnostics & Testing (pending)
+| Status | Task | Owner | Blocked By |
+|--------|------|-------|------------|
+| ✓ | Requirements Analysis | - | - |
+| ✓ | Solution Planning | - | - |
+| ⚙ | Development | al-developer | - |
+| ⏳ | Code Review | - | Development |
+| ⏳ | Diagnostics | - | Code Review |
+| ⏳ | Testing | - | Diagnostics |
+| ⏳ | Test Review | - | Testing |
+
+**Progress:** 2/7 tasks completed
+**Current:** Development (in progress)
+**Next:** Code Review (waiting for Development)
 
 ## Project Context
 Status: ✓ Available (.dev/project-context.md)
 Last Updated: 2026-01-22 09:15:00
 Objects: 12 tables, 8 pages, 15 codeunits
-Base App Points: 5 integrations documented
 
-## Recent Activity (last 5 agents)
-1. [14:25] al-developer - Implemented validation logic (iteration 2)
-2. [14:18] code-reviewer - Found 3 medium issues, sent back
-3. [14:12] al-developer - Initial implementation
-4. [14:05] solution-planner - Created solution plan
-5. [14:00] requirements-engineer - Analyzed requirements
+## Recent Activity (from session-log.md)
+1. [14:25] al-developer - Implementing validation logic
+2. [14:05] solution-planner - Created solution plan
+3. [14:00] requirements-engineer - Analyzed requirements
 
 ## Next Steps
-→ Waiting for al-developer to complete fixes
-→ Then: code-reviewer will review again
-→ User approval needed after code review passes
+→ al-developer completing Development task
+→ Then: Code Review will unblock
+→ User approval needed after code review
 
 ---
 
-💡 Tip: Project context saves 5-15 min per workflow. Keep it updated!
+💡 Tasks persist in ~/.claude/tasks/ - resume anytime!
 ```
 
-### If No Active Workflow
+### If No Tasks
 
 ```
 # Workflow Status
 
-No active workflow.
+No active tasks.
 
 ## Project Context
 Status: ✓ Available (.dev/project-context.md)
 Last Updated: 2026-01-22 09:15:00
 Objects: 12 tables, 8 pages, 15 codeunits
 
-## Last Completed Workflow
-Type: Quick Fix (/fix)
-Completed: 2026-01-22 13:45:00
-Files Changed: 1
-Duration: 4 minutes
-
 ## Available Commands
-- /dev-cycle "description" - Full development cycle
+- /dev-cycle "description" - Full development cycle (creates tasks)
 - /fix "bug description" - Quick bug fix (2-5 min)
 - /plan "feature" - Planning only
 - /develop - Development phase
@@ -116,7 +103,7 @@ Ready for next task!
 ```
 # Workflow Status
 
-No active workflow.
+No active tasks.
 
 ## Project Context
 Status: ⚠ Not Found
@@ -127,28 +114,37 @@ One-time setup takes 2-3 minutes.
 
 Run: /init-context
 
-This documents your project structure so agents don't need to explore every time.
-
 ## Recent Activity
 [Show last session if session-log exists]
 
 Ready for next task!
 ```
 
+## Task Status Legend
+
+| Icon | Status | Meaning |
+|------|--------|---------|
+| ✓ | completed | Task finished |
+| ⚙ | in_progress | Currently working |
+| ⏳ | pending | Not started (may be blocked) |
+| 🔒 | blocked | Waiting for other tasks |
+
 ## When to Use
 
 - Check progress during long workflows
+- See which task is currently active
+- Understand what's blocking progress
 - Verify context is available before starting work
-- See what last agent did
-- Understand where workflow is in pipeline
+- Resume after session restart
 
 ## Technical Notes
 
+- Uses native `TaskList` tool
+- Tasks persist in `~/.claude/tasks/`
 - Fast operation (<1 second)
-- Read-only (no file modifications)
-- Can run anytime without disrupting workflow
-- Helps user understand what's happening
+- Read-only (no modifications)
+- Shows real-time task state
 
 ---
 
-**Quick health check for your development session.**
+**Quick health check using native Tasks.**
