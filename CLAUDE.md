@@ -21,97 +21,76 @@ This repository uses Claude Code's plugin architecture where:
 
 ```
 claude-configs/
-├── profile-al-development/          # AL/Business Central development profile
+├── al-agent/          # AL/Business Central development profile (v3.0.0)
 │   ├── .claude-plugin/
-│   │   ├── plugin.json              # Plugin metadata (name, version, author)
-│   │   └── settings.json            # Plugin-specific settings
-│   ├── CLAUDE.md                    # AL coding standards and agent orchestration
-│   ├── agents/                      # 11 specialized agents for AL development
-│   │   ├── requirements-engineer.md
-│   │   ├── solution-planner.md
-│   │   ├── al-developer.md
-│   │   ├── code-reviewer.md
-│   │   ├── diagnostics-fixer.md
-│   │   ├── test-engineer.md
-│   │   ├── test-reviewer.md
-│   │   ├── bc-expert.md
-│   │   ├── docs-lookup.md
-│   │   ├── dependency-navigator.md
-│   │   └── interview.md
+│   │   └── plugin.json              # Plugin metadata (name, version, author)
+│   ├── CLAUDE.md                    # AL coding standards and workflow documentation
+│   ├── agents/                      # 5 specialized agents for AL development
+│   │   ├── solution-planner.md      # Transforms rough notes into structured specs
+│   │   ├── al-developer.md          # Implements code + self-review + diagnostics
+│   │   ├── test-engineer.md         # Creates test codeunits
+│   │   ├── test-reviewer.md         # Reviews test quality
+│   │   └── docs-writer.md           # Generates documentation
 │   ├── commands/                    # Slash commands (user-invocable)
-│   │   ├── dev-cycle.md            # Full development lifecycle
-│   │   ├── plan.md                 # Planning phase only
-│   │   ├── develop.md              # Development phase only
-│   │   ├── test.md                 # Testing phase only
-│   │   ├── fix.md                  # Quick bug fix workflow
-│   │   ├── estimate.md             # Estimation workflow
-│   │   ├── interview.md            # Deep requirements gathering
-│   │   ├── diagnostics.md          # Compiler diagnostics
-│   │   ├── bc-expert.md            # BC specialist consultation
-│   │   ├── docs-lookup.md          # Microsoft Docs search
-│   │   └── nav-baseapp.md          # Base app navigation
-│   ├── bc-code-intel-knowledge/     # BC Intelligence MCP knowledge base
-│   │   ├── specialists/             # Specialist personas
-│   │   └── domains/                 # Domain knowledge
+│   │   ├── plan.md                  # Transform notes into structured spec
+│   │   ├── develop.md               # Implement code from spec
+│   │   ├── test.md                  # Create and review tests
+│   │   └── document.md              # Generate documentation
+│   ├── docs-templates/              # Specification templates
+│   │   ├── spec-template.md         # Full spec template
+│   │   └── spec-minimal-example.md  # Minimal example
+│   ├── rules/                       # AL coding rules
+│   │   └── main.ruleset.json        # 70+ AL rules with actions
 │   ├── .mcp.json                    # MCP server configuration
 │   └── README.md                    # Profile documentation
-├── project-settings-template.json   # Template for project .claude/settings.json
 ├── .gitignore
 └── README.md                        # Repository overview and setup
 ```
 
 ## Key Concepts
 
-### Document-Driven Development (AL Profile)
+### Spec-Driven Development (AL Profile v3.0.0)
 
-The AL profile implements a document-driven workflow where:
+The AL profile implements a simplified spec-driven workflow where:
 
-1. **Agents write to files, not chat** - Keeps main conversation clean
-2. **Agents read previous outputs** - Sequential context flow via `.dev/` directory
-3. **Persistent documentation** - Full audit trail in markdown files
-4. **User approval gates** - Stop between major phases for validation
+1. **You write the spec** - Create feature specification in `docs/requirements/`
+2. **Agent implements** - Run `/develop` and the al-developer handles everything
+3. **Integrated quality** - Self-review and diagnostics are built into implementation
+4. **Document-driven output** - All work documented in `.dev/` directory
 
-### Agent Collaboration Pattern
+### Agent Workflow
 
 ```
-User Request
+docs/requirements/notes.md (rough notes/ideas)
     ↓
-requirements-engineer → .dev/01-requirements.md
+/plan → solution-planner
     ↓
-solution-planner → .dev/02-solution-plan.md (uses MCP tools)
+docs/requirements/notes-formatted.md (structured spec)
     ↓
-al-developer → AL source files (reads plan)
+/develop → al-developer (implements + self-reviews + fixes diagnostics)
     ↓
-code-reviewer → .dev/03-code-review.md
+.dev/03-development-report.md + AL source files
     ↓
-diagnostics-fixer → .dev/04-diagnostics.md + fixes
+(optional) /test → test-engineer → test-reviewer
     ↓
-test-engineer → .dev/05-test-plan.md + test code
-    ↓
-test-reviewer → .dev/06-test-review.md
+(optional) /document → docs-writer
 ```
 
 ### MCP Server Integration
 
 The AL profile uses three MCP servers:
 
-1. **BC Code Intelligence MCP** (`bc-code-intelligence-mcp`)
-   - BC specialist consultations via structured personas
-   - Knowledge base in `bc-code-intel-knowledge/`
-   - Custom config via `bc-code-intel-config.json`
+1. **GitHub MCP** (`github`)
+   - GitHub integration via @modelcontextprotocol/server-github
+   - Repository operations, issues, pull requests
 
 2. **Microsoft Docs MCP** (`microsoft_docs_mcp`)
    - Official AL/BC documentation lookup
-   - HTTP-based MCP server
+   - HTTP-based MCP server at learn.microsoft.com
 
-3. **AL Dependency MCP** (`al-mcp-server`)
-   - Base app object navigation
-   - Event discovery and dependency analysis
-   - Runs via npx
-
-4. **Serena MCP** (optional project-specific MCP)
-   - IDE assistant integration
-   - Project context awareness
+3. **Context7 MCP** (`context7`)
+   - Library documentation lookup
+   - Up-to-date code examples for any framework
 
 ## Common Development Tasks
 
@@ -149,10 +128,10 @@ git push
 ```bash
 cd ~/claude-configs
 
-# Edit files (e.g., profile-al-development/CLAUDE.md)
+# Edit files (e.g., al-agent/CLAUDE.md)
 # Make improvements to agents, commands, or instructions
 
-git add profile-al-development/
+git add al-agent/
 git commit -m "Improve [specific aspect]"
 git push
 
@@ -274,41 +253,48 @@ git push  # Share with other computers
 - Keep authentication in project-local files (`.env`, gitignored)
 - The `.gitignore` already excludes common sensitive patterns
 
-## AL Profile Specifics
+## AL Profile Specifics (v3.0.0)
 
-### Approval Gates
+### Simplified Workflow
 
-The AL profile implements mandatory approval gates in workflows:
+The AL profile v3.0.0 consolidates the development pipeline:
 
-1. After requirements analysis - user must approve before solution planning
-2. After solution planning - user must approve before implementation
-3. After code review - user must approve before testing
+1. **Write spec** - Create your specification in `docs/requirements/`
+2. **Run `/develop`** - al-developer handles implementation, self-review, and diagnostics
+3. **Optional testing** - Run `/test` for test generation and review
+4. **Optional docs** - Run `/document` for user documentation
 
-These gates prevent wasted work and ensure user validation at each phase.
+### Integrated Quality
 
-### Iteration Pattern
-
-Development phase uses iterative refinement:
+The al-developer agent performs self-review as part of implementation:
 
 ```
-al-developer → code
-    ↓
-code-reviewer → review
-    ↓
-If Critical/High issues → ITERATE back to al-developer
-If Minor issues → Continue to diagnostics-fixer
+al-developer
+├── Read spec
+├── Implement AL code
+├── Self-review (standards, DRY/SOLID, performance)
+├── Run al-compile
+├── Auto-fix safe diagnostics
+└── Write development report
 ```
+
+No separate code-reviewer or diagnostics-fixer phases - quality is integrated.
+
+### AL Coding Rules
+
+The profile includes `rules/*.json` with 70+ AL coding rules:
+- `"Error"` = Must follow - code violating these is rejected
+- `"Warning"` = Should follow - violations are noted
+- `"None"` = Ignored - rule is disabled
 
 ### AL Compilation
 
-The profile includes an `al-compile` bash script that:
-
-- Auto-detects VS Code AL extension and uses matching compiler version
-- Auto-detects workspace structure (single vs multi-app)
-- Auto-finds all `.alpackages` directories
-- Auto-applies ruleset files
-- Includes standard analyzers by default
-- Handles complex compilation scenarios automatically
+Use `al-compile` wrapper which auto-detects:
+- VS Code AL extension and compiler version
+- Workspace structure (single vs multi-app)
+- All `.alpackages` directories
+- Ruleset files
+- Standard analyzers
 
 Always use `al-compile` instead of manual AL compiler commands.
 

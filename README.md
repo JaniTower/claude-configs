@@ -14,14 +14,15 @@ This setup allows you to:
 
 ```
 claude-configs/
-├── profile-al-development/    # AL (Business Central) development profile
+├── al-agent/    # AL (Business Central) development profile (v3.0.0)
 │   ├── .claude-plugin/
 │   │   └── plugin.json        # Plugin metadata
-│   ├── CLAUDE.md              # AL coding standards and patterns
-│   ├── commands/              # Custom slash commands for AL
-│   ├── skills/                # Model-invoked skills for AL
-│   ├── agents/                # Custom subagents for AL
-│   └── .mcp.json              # AL MCP server configuration
+│   ├── CLAUDE.md              # AL coding standards and workflow docs
+│   ├── commands/              # Slash commands: /plan, /develop, /test, /document
+│   ├── agents/                # 5 agents: solution-planner, al-developer, test-engineer, test-reviewer, docs-writer
+│   ├── docs-templates/        # Specification templates for your projects
+│   ├── rules/                 # AL coding rules (70+ rules with actions)
+│   └── .mcp.json              # MCP server configuration (GitHub, MS Docs, Context7)
 ├── .gitignore
 └── README.md (this file)
 ```
@@ -30,11 +31,11 @@ claude-configs/
 
 Before using these plugins:
 
-1. **Update external tool paths (optional):**
-   - In `profile-al-development/.mcp.json`, update the path to the Serena tool if you're using it
-   - Or remove the serena MCP server configuration if not applicable
+1. **Set GitHub token (if using GitHub MCP):**
+   - Set `GITHUB_PERSONAL_ACCESS_TOKEN` environment variable
+   - Or remove the github MCP server from `.mcp.json` if not needed
 
-All other paths use `~` which expands to your home directory automatically.
+All other MCP servers (Microsoft Docs, Context7) work without configuration.
 
 ## Setup Instructions
 
@@ -73,7 +74,7 @@ In each project where you want to use these plugins, create or edit `.claude/set
     }
   },
   "enabledPlugins": {
-    "profile-al-development@local": true
+    "al-agent@local": true
   }
 }
 ```
@@ -94,7 +95,7 @@ As you add more profiles, you can combine them in a single project:
     }
   },
   "enabledPlugins": {
-    "profile-al-development@my-configs": true,
+    "al-agent@my-configs": true,
     "profile-al-testing@my-configs": true,
     "profile-devops@my-configs": true
   }
@@ -110,7 +111,7 @@ When you discover a useful pattern or want to improve the configuration:
 ```bash
 cd ~/claude-configs
 
-# Edit files (e.g., profile-al-development/CLAUDE.md)
+# Edit files (e.g., al-agent/CLAUDE.md)
 # Add new commands, update patterns, etc.
 
 git add .
@@ -131,18 +132,30 @@ All your projects immediately benefit from the updates without any additional co
 
 ## Available Plugins
 
-### profile-al-development
+### al-agent (v3.0.0)
 
 AL (Application Language) development configuration for Microsoft Dynamics 365 Business Central.
 
-**Includes:**
-- AL coding conventions and naming standards
-- Best practices for table extensions, events, and error handling
-- Performance optimization patterns
-- Testing guidelines
-- AL MCP server configuration
+**Workflow:** Write spec → `/develop` → Done (integrated self-review and diagnostics)
 
-**Documentation:** See `profile-al-development/README.md`
+**Commands:**
+- `/plan` - Transform rough notes into structured specification
+- `/develop` - Implement code from specification (includes self-review + diagnostics)
+- `/test` - Create and review tests for implemented code
+- `/document` - Generate user documentation
+
+**Agents:**
+- `solution-planner` - Structures rough notes into specs
+- `al-developer` - Implements code with integrated quality checks
+- `test-engineer` / `test-reviewer` - Test creation and review
+- `docs-writer` - Documentation generation
+
+**Also Includes:**
+- AL coding rules (70+ rules in `rules/main.ruleset.json`)
+- Specification templates (`docs-templates/`)
+- MCP servers: GitHub, Microsoft Docs, Context7
+
+**Documentation:** See `al-agent/README.md`
 
 ## Adding New Plugins
 
@@ -151,7 +164,7 @@ To create a new plugin profile:
 1. **Create plugin directory:**
    ```bash
    cd ~/claude-configs
-   mkdir -p profile-name/{.claude-plugin,commands,skills,agents}
+   mkdir -p profile-name/{.claude-plugin,commands,agents}
    ```
 
 2. **Create plugin.json:**
@@ -167,10 +180,10 @@ To create a new plugin profile:
    ```
 
 3. **Add configuration files:**
-   - `CLAUDE.md` - Memory/instructions
+   - `CLAUDE.md` - Instructions and standards
    - `commands/*.md` - Custom slash commands
-   - `skills/*/SKILL.md` - Agent skills
-   - `.mcp.json` - MCP server configuration
+   - `agents/*.md` - Specialized subagents
+   - `.mcp.json` - MCP server configuration (optional)
 
 4. **Document in README:**
    - Create `profile-name/README.md`
@@ -201,7 +214,7 @@ your-project/
 1. Plugin configurations load first (from `~/claude-configs/`)
 2. Project configurations merge on top (from `your-project/.claude/`)
 3. Project settings can override plugin defaults
-4. All configurations are additive (commands, skills, etc. from all sources are available)
+4. All configurations are additive (commands, agents, etc. from all sources are available)
 
 ## Configuration Hierarchy
 
