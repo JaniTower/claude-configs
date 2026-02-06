@@ -1,12 +1,12 @@
 {
   "name": "claude-configs",
   "owner": {
-    "name": "Stefan"
+    "name": "TowerNewCo"
   },
   "plugins": [
     {
-      "name": "profile-al-development",
-      "source": "./profile-al-development",
+      "name": "al-agent",
+      "source": "./al-agent",
       "description": "AL (Application Language) development configuration for Business Central. Includes AL-specific coding standards, patterns, commands, and tooling."
     }
   ]
