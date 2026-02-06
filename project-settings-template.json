@@ -1,6 +1,6 @@
 {
   "extraKnownMarketplaces": {
-    "my-configs": {
+    "claude-configs": {
       "source": {
         "source": "directory",
         "path": "~/claude-configs"
@@ -8,6 +8,6 @@
     }
   },
   "enabledPlugins": {
-    "al-agent@my-configs": true
+    "al-agent@claude-configs": true
   }
 }
