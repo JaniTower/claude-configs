@@ -27,3 +27,17 @@ Thumbs.db
 *.tmp
 *.temp
 .cache/
+
+# Node modules (if using npm-based MCP servers locally)
+node_modules/
+
+# Log files
+*.log
+
+# Windows artifacts
+nul
+desktop.ini
+
+# Backup files
+*.bak
+*.backup
