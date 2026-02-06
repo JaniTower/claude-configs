@@ -21,7 +21,7 @@ This repository uses Claude Code's plugin architecture where:
 
 ```
 claude-configs/
-├── al-agent/          # AL/Business Central development profile (v3.0.0)
+├── al-agent/          # AL/Business Central development profile (v1.0.0)
 │   ├── .claude-plugin/
 │   │   └── plugin.json              # Plugin metadata (name, version, author)
 │   ├── CLAUDE.md                    # AL coding standards and workflow documentation
@@ -49,7 +49,7 @@ claude-configs/
 
 ## Key Concepts
 
-### Spec-Driven Development (AL Profile v3.0.0)
+### Spec-Driven Development (AL Profile v1.0.0)
 
 The AL profile implements a simplified spec-driven workflow where:
 
@@ -253,11 +253,11 @@ git push  # Share with other computers
 - Keep authentication in project-local files (`.env`, gitignored)
 - The `.gitignore` already excludes common sensitive patterns
 
-## AL Profile Specifics (v3.0.0)
+## AL Profile Specifics (v1.0.0)
 
 ### Simplified Workflow
 
-The AL profile v3.0.0 consolidates the development pipeline:
+The AL profile v1.0.0 consolidates the development pipeline:
 
 1. **Write spec** - Create your specification in `docs/requirements/`
 2. **Run `/develop`** - al-developer handles implementation, self-review, and diagnostics

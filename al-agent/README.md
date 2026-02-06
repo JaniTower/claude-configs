@@ -1,6 +1,6 @@
 # AL Development Profile - Simplified Workflow
 
-**Version:** 3.0.0
+**Version:** 1.0.0
 
 Claude Code profile for Microsoft Dynamics 365 Business Central AL development with a simplified spec-driven workflow.
 

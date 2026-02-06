@@ -1,6 +1,6 @@
 # AL Development Profile - Simplified Workflow
 
-**Version:** 3.0.0
+**Version:** 1.0.0
 
 ## Core Principles
 

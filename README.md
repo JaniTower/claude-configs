@@ -14,7 +14,7 @@ This setup allows you to:
 
 ```
 claude-configs/
-├── al-agent/    # AL (Business Central) development profile (v3.0.0)
+├── al-agent/    # AL (Business Central) development profile (v1.0.0)
 │   ├── .claude-plugin/
 │   │   └── plugin.json        # Plugin metadata
 │   ├── CLAUDE.md              # AL coding standards and workflow docs
@@ -132,7 +132,7 @@ All your projects immediately benefit from the updates without any additional co
 
 ## Available Plugins
 
-### al-agent (v3.0.0)
+### al-agent (v1.0.0)
 
 AL (Application Language) development configuration for Microsoft Dynamics 365 Business Central.
 
