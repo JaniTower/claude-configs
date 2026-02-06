@@ -8,6 +8,6 @@
     }
   },
   "enabledPlugins": {
-    "profile-al-development@my-configs": true
+    "al-agent@my-configs": true
   }
 }
